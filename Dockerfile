@@ -1,4 +1,3 @@
-
 FROM php:8.4-cli
 
 RUN apt-get update && apt-get install -y \
@@ -19,5 +18,3 @@ EXPOSE 8080
 CMD sleep 5 && php artisan migrate --force && \
     php artisan db:seed --class=AdminSeeder --force && \
     php artisan serve --host=0.0.0.0 --port=${PORT:-8080}
-
-

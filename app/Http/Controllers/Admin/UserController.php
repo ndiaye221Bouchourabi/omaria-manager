@@ -3,12 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Mail\InvitationMail;
 use App\Models\Invitation;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
 use App\Services\ActivityLogger;
@@ -26,7 +24,6 @@ class UserController extends Controller
         return view('admin.users.create');
     }
 
-    /** Crée le compte et envoie l'invitation par email */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -48,9 +45,8 @@ class UserController extends Controller
             'is_active' => false,
         ]);
 
-        $this->sendInvitation($user);
+        $lien = $this->sendInvitation($user);
 
-        // ✅ Log ici — DANS la fonction store()
         ActivityLogger::log(
             action: 'Invitation envoyée',
             module: 'users',
@@ -58,31 +54,31 @@ class UserController extends Controller
         );
 
         return redirect()->route('admin.users.index')
-            ->with('success', 'Invitation envoyée à ' . $user->email . '.');
+            ->with('invitation_link', $lien)
+            ->with('success', 'Utilisateur créé ! Copiez le lien d\'invitation ci-dessous.');
     }
 
-    /** Renvoyer une invitation */
     public function resendInvitation(User $user)
     {
-        Invitation::where('user_id', $user->id)
-            ->whereNull('accepted_at')
-            ->delete();
+        $lien = $this->sendInvitation($user);
 
-        $this->sendInvitation($user);
-
-        // ✅ Log renvoi invitation
         ActivityLogger::log(
             action: 'Invitation renvoyée',
             module: 'users',
             detail: "Renvoi invitation à : {$user->name} ({$user->email})"
         );
 
-        return back()->with('success', 'Invitation renvoyée à ' . $user->email . '.');
+        return redirect()->route('admin.users.index')
+            ->with('invitation_link', $lien)
+            ->with('success', 'Lien d\'invitation généré !');
     }
 
-    /** Logique commune : créer token + envoyer mail */
-    private function sendInvitation(User $user): void
+    private function sendInvitation(User $user): string
     {
+        Invitation::where('user_id', $user->id)
+            ->whereNull('accepted_at')
+            ->delete();
+
         $token = Str::random(64);
 
         Invitation::create([
@@ -91,10 +87,9 @@ class UserController extends Controller
             'expires_at' => now()->addHours(24),
         ]);
 
-        Mail::to($user->email)->queue(new InvitationMail($user, $token));
+        return route('invitation.accept', $token);
     }
 
-    /** Page "créer mon mot de passe" (publique) */
     public function acceptForm(string $token)
     {
         $invitation = Invitation::where('token', $token)
@@ -109,7 +104,6 @@ class UserController extends Controller
         return view('admin.users.accept-invitation', compact('invitation', 'token'));
     }
 
-    /** Traitement du formulaire "créer mon mot de passe" */
     public function acceptStore(Request $request, string $token)
     {
         $invitation = Invitation::where('token', $token)
@@ -136,7 +130,6 @@ class UserController extends Controller
 
         $invitation->update(['accepted_at' => now()]);
 
-        // ✅ Log activation compte
         ActivityLogger::log(
             action: 'Activation compte',
             module: 'users',
@@ -176,7 +169,6 @@ class UserController extends Controller
             $user->update(['password' => Hash::make($request->password)]);
         }
 
-        // ✅ Log ici — DANS la fonction update()
         ActivityLogger::log(
             action: 'Modification utilisateur',
             module: 'users',
@@ -196,7 +188,6 @@ class UserController extends Controller
         $user->update(['is_active' => !$user->is_active]);
         $action = $user->is_active ? 'activé' : 'désactivé';
 
-        // ✅ Log activation/désactivation
         ActivityLogger::log(
             action: 'Compte ' . $action,
             module: 'users',
@@ -218,7 +209,6 @@ class UserController extends Controller
 
         $user->delete();
 
-        // ✅ Log suppression utilisateur
         ActivityLogger::log(
             action: 'Suppression utilisateur',
             module: 'users',

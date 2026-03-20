@@ -91,7 +91,11 @@ class UserController extends Controller
             'expires_at' => now()->addHours(24),
         ]);
 
-        Mail::to($user->email)->queue(new InvitationMail($user, $token));
+        try {
+            Mail::to($user->email)->send(new InvitationMail($user, $token));
+        } catch (\Exception $e) {
+            \Log::error('Mail failed: ' . $e->getMessage());
+        }
     }
 
     /** Page "créer mon mot de passe" (publique) */

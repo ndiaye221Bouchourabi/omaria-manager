@@ -7,12 +7,14 @@ class AdminSeeder extends Seeder
 {
     public function run(): void
     {
-        User::create([
-            'name' => 'Admin',
-            'email' => 'ndiaye.cheikhh20@gmail.com',
-            'password' => bcrypt('LwuJ6622'),
-            'role' => 'admin',
-            'is_active' => true,
-        ]);
+        User::firstOrCreate(
+            ['email' => 'ndiaye.cheikhh20@gmail.com'],
+            [
+                'name' => 'Admin',
+                'password' => bcrypt('Admin@1234'),
+                'role' => 'admin',
+                'is_active' => true,
+            ]
+        );
     }
 }

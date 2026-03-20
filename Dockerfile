@@ -14,6 +14,7 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction
 RUN npm install && npm run build
 
 EXPOSE 8000
+hp artisan db:seed --class=AdminSeeder --force &&
 
 CMD sleep 5 && php artisan migrate --force && \
     php artisan serve --host=0.0.0.0 --port=${PORT:-8000}

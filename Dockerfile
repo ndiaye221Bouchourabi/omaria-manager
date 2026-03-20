@@ -16,11 +16,11 @@ COPY . .
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 RUN npm install && npm run build
 
-# Laravel
-RUN php artisan config:cache
-RUN php artisan route:cache
-RUN php artisan view:cache
-
 EXPOSE 8000
 
-CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=${PORT:-8000}
+# Les caches ET migrations au démarrage (variables dispo ici)
+CMD php artisan config:cache && \
+    php artisan route:cache && \
+    php artisan view:cache && \
+    php artisan migrate --force && \
+    php artisan serve --host=0.0.0.0 --port=${PORT:-8000}

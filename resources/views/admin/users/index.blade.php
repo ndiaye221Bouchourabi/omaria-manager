@@ -11,7 +11,6 @@
             gap: 1.25rem;
         }
 
-        /* Header page */
         .users-header {
             display: flex;
             align-items: center;
@@ -83,7 +82,6 @@
             color: white;
         }
 
-        /* Stats rôles */
         .role-stats {
             display: flex;
             gap: 1rem;
@@ -109,7 +107,6 @@
             border-radius: 50%;
         }
 
-        /* Table utilisateurs */
         .users-table-wrap {
             background: rgba(255, 255, 255, 0.88);
             backdrop-filter: blur(14px);
@@ -163,7 +160,6 @@
             vertical-align: middle;
         }
 
-        /* Avatar utilisateur */
         .user-cell {
             display: flex;
             align-items: center;
@@ -198,7 +194,6 @@
             margin-top: 1px;
         }
 
-        /* Badge rôle — 4 nouveaux rôles */
         .role-badge {
             display: inline-flex;
             align-items: center;
@@ -235,7 +230,6 @@
             border-color: rgba(16, 185, 129, 0.25);
         }
 
-        /* Badge statut */
         .status-badge {
             display: inline-flex;
             align-items: center;
@@ -281,7 +275,6 @@
             background: #f59e0b;
         }
 
-        /* Actions */
         .action-btn {
             width: 32px;
             height: 32px;
@@ -322,7 +315,6 @@
             color: #5b21b6;
         }
 
-        /* Badge invitation en attente */
         .invite-pending {
             display: inline-flex;
             align-items: center;
@@ -336,7 +328,6 @@
             margin-top: 3px;
         }
 
-        /* Moi-même */
         .me-badge {
             display: inline-block;
             padding: 2px 7px;
@@ -349,7 +340,6 @@
             margin-left: 6px;
         }
 
-        /* Empty state */
         .empty-users {
             text-align: center;
             padding: 3rem;
@@ -362,6 +352,54 @@
             display: block;
             margin-bottom: 8px;
             opacity: 0.3;
+        }
+
+        .invitation-link-box {
+            background: rgba(59, 130, 246, 0.06);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 14px;
+            padding: 16px 20px;
+        }
+
+        .invitation-link-title {
+            font-family: 'Sora', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            color: #1d4ed8;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .invitation-link-input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 12.5px;
+            color: #334155;
+            background: white;
+            cursor: pointer;
+        }
+
+        .btn-copy-link {
+            margin-top: 10px;
+            padding: 9px 18px;
+            background: linear-gradient(135deg, #1d4088, #3b82f6);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Sora', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-copy-link:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
         }
     </style>
 
@@ -380,8 +418,6 @@
             </div>
 
             <div class="d-flex align-items-center gap-3 flex-wrap">
-
-                {{-- Stats par rôle — 4 nouveaux rôles --}}
                 <div class="role-stats">
                     <div class="role-stat-chip">
                         <div class="role-stat-dot" style="background:#f59e0b;"></div>
@@ -407,7 +443,7 @@
             </div>
         </div>
 
-        {{-- Alertes session --}}
+        {{-- Message succès --}}
         @if(session('success'))
             <div
                 style="background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.2); border-radius:12px; padding:12px 16px; font-size:13px; color:#065f46; display:flex; align-items:center; gap:8px;">
@@ -415,6 +451,24 @@
                 {{ session('success') }}
             </div>
         @endif
+
+        {{-- Lien invitation --}}
+        @if(session('invitation_link'))
+            <div class="invitation-link-box">
+                <div class="invitation-link-title">
+                    🔗 Lien d'invitation — envoyez ce lien par WhatsApp ou SMS
+                </div>
+                <input type="text" class="invitation-link-input" value="{{ session('invitation_link') }}"
+                    onclick="this.select()" readonly id="invitationLinkInput">
+                <br>
+                <button class="btn-copy-link"
+                    onclick="navigator.clipboard.writeText(document.getElementById('invitationLinkInput').value); this.innerHTML='✅ Copié !'">
+                    📋 Copier le lien
+                </button>
+            </div>
+        @endif
+
+        {{-- Message erreur --}}
         @if(session('error'))
             <div
                 style="background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.2); border-radius:12px; padding:12px 16px; font-size:13px; color:#7f1d1d; display:flex; align-items:center; gap:8px;">
@@ -438,8 +492,6 @@
                 <tbody>
                     @forelse($users as $user)
                         <tr class="{{ !$user->is_active ? 'inactive-row' : '' }}">
-
-                            {{-- Avatar + nom + email --}}
                             <td>
                                 <div class="user-cell">
                                     <div class="user-avatar">
@@ -453,7 +505,6 @@
                                             @endif
                                         </div>
                                         <div class="user-email">{{ $user->email }}</div>
-                                        {{-- Badge invitation en attente --}}
                                         @if(!$user->is_active && $user->invitations()->whereNull('accepted_at')->exists())
                                             <div class="invite-pending">
                                                 <i class="bi bi-envelope-exclamation" style="font-size:10px;"></i>
@@ -464,7 +515,6 @@
                                 </div>
                             </td>
 
-                            {{-- Rôle --}}
                             <td>
                                 <span class="role-badge {{ $user->role }}">
                                     @if($user->role === 'admin')
@@ -479,7 +529,6 @@
                                 </span>
                             </td>
 
-                            {{-- Statut --}}
                             <td>
                                 @if(!$user->is_active && $user->invitations()->whereNull('accepted_at')->exists())
                                     <span class="status-badge pending">
@@ -494,34 +543,27 @@
                                 @endif
                             </td>
 
-                            {{-- Date création --}}
                             <td style="font-size:12px; color:#64748b;">
                                 {{ $user->created_at->format('d/m/Y') }}
                             </td>
 
-                            {{-- Actions --}}
                             <td>
                                 <div class="d-flex justify-content-end gap-2">
-
-                                    {{-- Modifier --}}
                                     <a href="{{ route('admin.users.edit', $user) }}" class="action-btn" title="Modifier">
                                         <i class="bi bi-pencil"></i>
                                     </a>
 
                                     @if($user->id !== auth()->id())
-
-                                        {{-- Renvoyer invitation (compte pas encore activé) --}}
                                         @if(!$user->is_active)
                                             <form method="POST" action="{{ route('admin.users.resend', $user) }}"
                                                 style="display:inline;">
                                                 @csrf
-                                                <button type="submit" class="action-btn resend" title="Renvoyer l'invitation">
-                                                    <i class="bi bi-envelope-arrow-up"></i>
+                                                <button type="submit" class="action-btn resend" title="Générer lien invitation">
+                                                    <i class="bi bi-link-45deg"></i>
                                                 </button>
                                             </form>
                                         @endif
 
-                                        {{-- Activer / Désactiver --}}
                                         <form method="POST" action="{{ route('admin.users.toggle', $user) }}"
                                             style="display:inline;">
                                             @csrf @method('PATCH')
@@ -531,7 +573,6 @@
                                             </button>
                                         </form>
 
-                                        {{-- Supprimer --}}
                                         <form method="POST" action="{{ route('admin.users.destroy', $user) }}"
                                             style="display:inline;"
                                             onsubmit="return confirm('Supprimer « {{ $user->name }} » ? Cette action est irréversible.')">
@@ -540,7 +581,6 @@
                                                 <i class="bi bi-trash3"></i>
                                             </button>
                                         </form>
-
                                     @endif
                                 </div>
                             </td>

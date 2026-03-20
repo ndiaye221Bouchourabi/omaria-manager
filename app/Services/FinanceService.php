@@ -14,13 +14,15 @@ class FinanceService
     {
         $collectesQuery = DB::table('collectes')
             ->whereBetween('date_collecte', [$dateDebut, $dateFin]);
-        if ($pointId) $collectesQuery->where('point_id', $pointId);
+        if ($pointId)
+            $collectesQuery->where('point_id', $pointId);
         $totalCollectes = $collectesQuery->sum('montant');
 
         $depensesDirectesQuery = DB::table('depenses')
             ->where('portee', 'point')
             ->whereBetween('date_depense', [$dateDebut, $dateFin]);
-        if ($pointId) $depensesDirectesQuery->where('point_id', $pointId);
+        if ($pointId)
+            $depensesDirectesQuery->where('point_id', $pointId);
         $totalDepensesDirectes = $depensesDirectesQuery->sum('montant');
 
         $depensesGlobales = DB::table('depenses')
@@ -28,15 +30,15 @@ class FinanceService
             ->whereBetween('date_depense', [$dateDebut, $dateFin])
             ->sum('montant');
 
-        $pointsActifs   = DB::table('points')->where('status', 'Actif')->count();
+        $pointsActifs = DB::table('points')->where('status', 'Actif')->count();
         $chargeParPoint = $pointsActifs > 0 ? $depensesGlobales / $pointsActifs : 0;
 
         return [
-            'total_collectes'         => $totalCollectes,
+            'total_collectes' => $totalCollectes,
             'total_depenses_directes' => $totalDepensesDirectes,
-            'total_global_depenses'   => $depensesGlobales,
-            'points_actifs'           => $pointsActifs,
-            'par_point'               => $chargeParPoint,
+            'total_global_depenses' => $depensesGlobales,
+            'points_actifs' => $pointsActifs,
+            'par_point' => $chargeParPoint,
         ];
     }
 
@@ -57,15 +59,15 @@ class FinanceService
             ->sum('montant');
 
         $chargeGlobale = $chargeParPoint;
-        $benefice      = $collectes - ($depensesDirectes + $chargeGlobale);
-        $ratio         = $collectes > 0 ? ($benefice / $collectes) * 100 : 0;
+        $benefice = $collectes - ($depensesDirectes + $chargeGlobale);
+        $ratio = $collectes > 0 ? ($benefice / $collectes) * 100 : 0;
 
         return [
-            'collectes'         => $collectes,
+            'collectes' => $collectes,
             'depenses_directes' => $depensesDirectes,
-            'charge_globale'    => $chargeGlobale,
-            'benefice'          => $benefice,
-            'ratio'             => round($ratio, 2),
+            'charge_globale' => $chargeGlobale,
+            'benefice' => $benefice,
+            'ratio' => round($ratio, 2),
         ];
     }
 
@@ -111,30 +113,32 @@ class FinanceService
             // ✅ Collectes groupées par le champ `semaine` enregistré
             $collecteQuery = DB::table('collectes')
                 ->where('semaine', $sem->semaine_label);
-            if ($pointId) $collecteQuery->where('point_id', $pointId);
+            if ($pointId)
+                $collecteQuery->where('point_id', $pointId);
             $totalCollecte = $collecteQuery->sum('montant');
 
             // Dépenses sur la plage de dates de la semaine
             $depenseQuery = DB::table('depenses')
                 ->whereBetween('date_depense', [$start, $end]);
-            if ($pointId) $depenseQuery->where('point_id', $pointId);
+            if ($pointId)
+                $depenseQuery->where('point_id', $pointId);
             $totalDepense = $depenseQuery->sum('montant');
 
             $benefice = $totalCollecte - $totalDepense;
 
-            $labels[]    = $sem->semaine_label;
+            $labels[] = $sem->semaine_label;
             $collectes[] = $totalCollecte;
-            $depenses[]  = $totalDepense;
+            $depenses[] = $totalDepense;
             $benefices[] = $benefice;
         }
 
         return [
-            'labels'    => $labels,
+            'labels' => $labels,
             'collectes' => $collectes,
-            'depenses'  => $depenses,
+            'depenses' => $depenses,
             'benefices' => $benefices,
-            'current'   => !empty($collectes) ? end($collectes) : 0,
-            'previous'  => count($collectes) >= 2 ? $collectes[count($collectes) - 2] : 0,
+            'current' => !empty($collectes) ? end($collectes) : 0,
+            'previous' => count($collectes) >= 2 ? $collectes[count($collectes) - 2] : 0,
         ];
     }
 
@@ -147,24 +151,31 @@ class FinanceService
         $collectesQuery = DB::table('collectes')
             ->selectRaw('semaine AS semaine_label, YEAR(date_collecte) AS year_number, WEEK(date_collecte,1) AS week_number')
             ->distinct();
-        if ($year)    $collectesQuery->whereYear('date_collecte', $year);
-        if ($month)   $collectesQuery->whereMonth('date_collecte', $month);
-        if ($pointId) $collectesQuery->where('point_id', $pointId);
+        if ($year)
+            $collectesQuery->whereYear('date_collecte', $year);
+        if ($month)
+            $collectesQuery->whereMonth('date_collecte', $month);
+        if ($pointId)
+            $collectesQuery->where('point_id', $pointId);
 
         $depensesQuery = DB::table('depenses')
             ->selectRaw("CONCAT('Sem ',WEEK(date_depense,1),'-',YEAR(date_depense)) AS semaine_label, YEAR(date_depense) AS year_number, WEEK(date_depense,1) AS week_number")
             ->distinct();
-        if ($year)    $depensesQuery->whereYear('date_depense', $year);
-        if ($month)   $depensesQuery->whereMonth('date_depense', $month);
-        if ($pointId) $depensesQuery->where('point_id', $pointId)->where('portee', 'point');
+        if ($year)
+            $depensesQuery->whereYear('date_depense', $year);
+        if ($month)
+            $depensesQuery->whereMonth('date_depense', $month);
+        if ($pointId)
+            $depensesQuery->where('point_id', $pointId)->where('portee', 'point');
 
-        $toutes      = $collectesQuery->get();
+        $toutes = $collectesQuery->get();
         $depSemaines = $depensesQuery->get();
 
         $merged = $toutes->keyBy(fn($s) => $s->year_number . '-' . $s->week_number);
         foreach ($depSemaines as $dep) {
             $key = $dep->year_number . '-' . $dep->week_number;
-            if (!$merged->has($key)) $merged->put($key, $dep);
+            if (!$merged->has($key))
+                $merged->put($key, $dep);
         }
 
         return $merged
@@ -178,8 +189,9 @@ class FinanceService
     public function getAverageRevenuePerWeek($dateDebut, $dateFin, $pointId = null)
     {
         $query = DB::table('collectes')->whereBetween('date_collecte', [$dateDebut, $dateFin]);
-        if ($pointId) $query->where('point_id', $pointId);
-        $total      = (clone $query)->sum('montant');
+        if ($pointId)
+            $query->where('point_id', $pointId);
+        $total = (clone $query)->sum('montant');
         $nbSemaines = (clone $query)->distinct()->count('semaine');
         return $nbSemaines > 0 ? round($total / $nbSemaines, 3) : 0;
     }
@@ -192,9 +204,10 @@ class FinanceService
         $query = DB::table('collectes')
             ->whereBetween('date_collecte', [$dateDebut, $dateFin])
             ->selectRaw('semaine, SUM(montant) as total')
-            ->groupBy('semaine')
+            ->groupBy('semaine', 'date_collecte')
             ->orderBy('date_collecte');
-        if ($pointId) $query->where('point_id', $pointId);
+        if ($pointId)
+            $query->where('point_id', $pointId);
         return $query->get();
     }
 
@@ -213,16 +226,25 @@ class FinanceService
      */
     public function getMonthlyChartData(int $year, $pointId = null): array
     {
-        $labels           = [];
-        $collectes        = [];
-        $depensesPoints   = [];
+        $labels = [];
+        $collectes = [];
+        $depensesPoints = [];
         $depensesGlobales = [];
-        $benefices        = [];
+        $benefices = [];
 
         $moisLabels = [
-            1 => 'Jan', 2 => 'Fév', 3 => 'Mar', 4 => 'Avr',
-            5 => 'Mai', 6 => 'Juin', 7 => 'Juil', 8 => 'Août',
-            9 => 'Sep', 10 => 'Oct', 11 => 'Nov', 12 => 'Déc',
+            1 => 'Jan',
+            2 => 'Fév',
+            3 => 'Mar',
+            4 => 'Avr',
+            5 => 'Mai',
+            6 => 'Juin',
+            7 => 'Juil',
+            8 => 'Août',
+            9 => 'Sep',
+            10 => 'Oct',
+            11 => 'Nov',
+            12 => 'Déc',
         ];
 
         /* Quels mois ont des données pour cette année ? */
@@ -245,17 +267,18 @@ class FinanceService
         }
 
         if ($moisAvecDonnees->isEmpty()) {
-            return compact('labels','collectes','depensesPoints','depensesGlobales','benefices');
+            return compact('labels', 'collectes', 'depensesPoints', 'depensesGlobales', 'benefices');
         }
 
-        $nbPointsActifs = DB::table('points')->where('status','Actif')->count() ?: 1;
+        $nbPointsActifs = DB::table('points')->where('status', 'Actif')->count() ?: 1;
 
         foreach ($moisAvecDonnees as $mois) {
             /* Collectes du mois */
             $qC = DB::table('collectes')
                 ->whereYear('date_collecte', $year)
                 ->whereMonth('date_collecte', $mois);
-            if ($pointId) $qC->where('point_id', $pointId);
+            if ($pointId)
+                $qC->where('point_id', $pointId);
             $totalC = (float) $qC->sum('montant');
 
             /* Dépenses par point du mois */
@@ -263,7 +286,8 @@ class FinanceService
                 ->where('portee', 'point')
                 ->whereYear('date_depense', $year)
                 ->whereMonth('date_depense', $mois);
-            if ($pointId) $qDP->where('point_id', $pointId);
+            if ($pointId)
+                $qDP->where('point_id', $pointId);
             $totalDP = (float) $qDP->sum('montant');
 
             /* Charges globales du mois (répartie si point filtré) */
@@ -280,14 +304,14 @@ class FinanceService
 
             $benefice = round($totalC - $totalDP - $chargeGlobale, 3);
 
-            $labels[]           = $moisLabels[$mois] . ' ' . $year;
-            $collectes[]        = round($totalC, 3);
-            $depensesPoints[]   = round($totalDP, 3);
+            $labels[] = $moisLabels[$mois] . ' ' . $year;
+            $collectes[] = round($totalC, 3);
+            $depensesPoints[] = round($totalDP, 3);
             $depensesGlobales[] = round($chargeGlobale, 3);
-            $benefices[]        = $benefice;
+            $benefices[] = $benefice;
         }
 
-        return compact('labels','collectes','depensesPoints','depensesGlobales','benefices');
+        return compact('labels', 'collectes', 'depensesPoints', 'depensesGlobales', 'benefices');
     }
 
     /**
@@ -295,7 +319,8 @@ class FinanceService
      */
     public function getCoverageRate($totalCollectes, $totalDepenses)
     {
-        if ($totalDepenses <= 0) return $totalCollectes > 0 ? 999 : 0;
+        if ($totalDepenses <= 0)
+            return $totalCollectes > 0 ? 999 : 0;
         return round(($totalCollectes / $totalDepenses) * 100, 1);
     }
 
@@ -319,9 +344,10 @@ class FinanceService
     public function getDynamicThreshold($rentabilitePoints)
     {
         $ratios = $rentabilitePoints->pluck('ratio');
-        if ($ratios->isEmpty()) return 10;
-        $moyenne   = $ratios->avg();
-        $variance  = $ratios->map(fn($r) => pow($r - $moyenne, 2))->avg();
+        if ($ratios->isEmpty())
+            return 10;
+        $moyenne = $ratios->avg();
+        $variance = $ratios->map(fn($r) => pow($r - $moyenne, 2))->avg();
         $ecartType = sqrt($variance);
         return max(0, round($moyenne - $ecartType, 2));
     }
@@ -338,10 +364,10 @@ class FinanceService
         $max = $semaines->sortByDesc('total')->first();
         $min = $semaines->sortBy('total')->first();
         return [
-            'semaine_forte'  => $max->semaine,
+            'semaine_forte' => $max->semaine,
             'semaine_faible' => $min->semaine,
-            'max_montant'    => $max->total,
-            'min_montant'    => $min->total,
+            'max_montant' => $max->total,
+            'min_montant' => $min->total,
         ];
     }
 
@@ -350,7 +376,8 @@ class FinanceService
      */
     public function calculateTrend($current, $previous)
     {
-        if ($previous <= 0) return $current > 0 ? 100 : 0;
+        if ($previous <= 0)
+            return $current > 0 ? 100 : 0;
         return round((($current - $previous) / $previous) * 100, 1);
     }
 
@@ -378,13 +405,23 @@ class FinanceService
             ->pluck('month');
 
         $labels = [
-            1=>'Janvier',2=>'Février',3=>'Mars',4=>'Avril',
-            5=>'Mai',6=>'Juin',7=>'Juillet',8=>'Août',
-            9=>'Septembre',10=>'Octobre',11=>'Novembre',12=>'Décembre',
+            1 => 'Janvier',
+            2 => 'Février',
+            3 => 'Mars',
+            4 => 'Avril',
+            5 => 'Mai',
+            6 => 'Juin',
+            7 => 'Juillet',
+            8 => 'Août',
+            9 => 'Septembre',
+            10 => 'Octobre',
+            11 => 'Novembre',
+            12 => 'Décembre',
         ];
 
         $result = [];
-        foreach ($months as $m) $result[$m] = $labels[$m];
+        foreach ($months as $m)
+            $result[$m] = $labels[$m];
         return $result;
     }
 }

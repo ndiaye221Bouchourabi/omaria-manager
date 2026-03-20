@@ -15,4 +15,5 @@ RUN npm install && npm run build
 
 EXPOSE 8080
 
+RUN chmod +x /app/start.sh
 CMD ["/bin/bash", "/app/start.sh"]

@@ -6,9 +6,10 @@ use App\Http\Controllers\DepenseController;
 use App\Http\Controllers\PointController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\LogController;
+use App\Http\Controllers\Admin\PasswordResetLinkController;
 use Illuminate\Support\Facades\Route;
 
-// ✅ Route racine — redirige selon rôle ou vers login
+// ✅ Route racine
 Route::get('/', function () {
     if (auth()->check()) {
         $role = auth()->user()->role;
@@ -28,10 +29,16 @@ Route::get('/invitation/{token}', [UserController::class, 'acceptForm'])
 Route::post('/invitation/{token}', [UserController::class, 'acceptStore'])
     ->name('invitation.accept.store');
 
+// ✅ Routes publiques réinitialisation mot de passe
+Route::get('/reset-password/{token}', [PasswordResetLinkController::class, 'form'])
+    ->name('password.reset.form');
+Route::post('/reset-password/{token}', [PasswordResetLinkController::class, 'store'])
+    ->name('password.reset.store');
+
 // ✅ Routes PROTÉGÉES
 Route::middleware(['auth', 'role'])->group(function () {
 
-    /* ---- Dashboard — admin + proprietaire ---- */
+    /* ---- Dashboard ---- */
     Route::middleware('role:admin,proprietaire')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])
             ->name('dashboard');
@@ -77,14 +84,14 @@ Route::middleware(['auth', 'role'])->group(function () {
         Route::delete('/depenses/{depense}', [DepenseController::class, 'destroy'])->name('depenses.destroy');
     });
 
-    /* ---- Administration — admin + proprietaire ---- */
+    /* ---- Administration ---- */
     Route::middleware('role:admin,proprietaire')->prefix('admin')->name('admin.')->group(function () {
         Route::resource('users', UserController::class);
         Route::patch('users/{user}/toggle', [UserController::class, 'toggle'])->name('users.toggle');
         Route::post('users/{user}/resend-invitation', [UserController::class, 'resendInvitation'])->name('users.resend');
+        Route::post('users/{user}/reset-password', [PasswordResetLinkController::class, 'generate'])->name('users.reset-password');
         Route::get('logs', [LogController::class, 'index'])->name('logs.index');
     });
-
 });
 
 require __DIR__ . '/auth.php';

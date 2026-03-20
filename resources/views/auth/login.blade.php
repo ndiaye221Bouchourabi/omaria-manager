@@ -293,12 +293,10 @@
                         Se souvenir de moi
                     </label>
 
-                    @if(Route::has('password.request'))
-                        <a href="{{ route('password.request') }}" class="forgot-link">
-                            <i class="bi bi-key"></i>
-                            Mot de passe oublié ?
-                        </a>
-                    @endif
+                   <span class="forgot-link" style="color:#94a3b8; cursor:default;">
+    <i class="bi bi-key"></i>
+    Contactez votre admin
+</span>
                 </div>
 
                 <button type="submit" class="btn-login">

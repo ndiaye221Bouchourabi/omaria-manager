@@ -14,6 +14,8 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction
 RUN npm install && npm run build
 
 EXPOSE 8080
-CMD sleep 5 && php artisan migrate:fresh --force && \
+
+CMD sleep 5 && php artisan migrate --force && \
     php artisan db:seed --class=AdminSeeder --force && \
+    php artisan queue:work --daemon & \
     php artisan serve --host=0.0.0.0 --port=${PORT:-8080}

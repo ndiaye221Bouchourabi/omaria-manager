@@ -127,7 +127,7 @@
                     <span class="kpi-icon"><i class="bi bi-wallet2"></i></span>
                     <span class="kpi-title">Total Collectes</span>
                 </div>
-                <div class="kpi-value">{{ FinanceHelper::formatMoney($profitability['collectes'] ?? 0) }}</div>
+                <div class="kpi-value">{{ \App\Helpers\FinanceHelper::formatMoney($profitability['collectes'] ?? 0) }}</div>
                 <div class="kpi-trend {{ $tendance < 0 ? 'negative' : 'positive' }}">
                     <i class="bi bi-{{ $tendance >= 0 ? 'arrow-up' : 'arrow-down' }}-short"></i>
                     {{ abs($tendance) }}% vs préc.
@@ -143,7 +143,7 @@
                     <span class="kpi-icon"><i class="bi bi-geo-alt"></i></span>
                     <span class="kpi-title">Dépenses Points</span>
                 </div>
-                <div class="kpi-value">{{ FinanceHelper::formatMoney($profitability['depenses_directes'] ?? 0) }}</div>
+                <div class="kpi-value">{{ \App\Helpers\FinanceHelper::formatMoney($profitability['depenses_directes'] ?? 0) }}</div>
                 <div class="kpi-footer">
                     <i class="bi bi-pie-chart-fill"></i> {{ $depRatio ?? 0 }}% des dépenses
                 </div>
@@ -158,7 +158,7 @@
                     <span class="kpi-icon"><i class="bi bi-globe"></i></span>
                     <span class="kpi-title">Charges Globales</span>
                 </div>
-                <div class="kpi-value">{{ FinanceHelper::formatMoney($profitability['charge_globale'] ?? 0) }}</div>
+                <div class="kpi-value">{{ \App\Helpers\FinanceHelper::formatMoney($profitability['charge_globale'] ?? 0) }}</div>
                 <div class="kpi-footer">
                     <i class="bi bi-diagram-3-fill"></i> {{ $globalData['points_actifs'] ?? 0 }} pts actifs
                 </div>
@@ -180,7 +180,7 @@
                     </span>
                     <span class="kpi-title">Bénéfice Net</span>
                 </div>
-                <div class="kpi-value">{{ $benefNet >= 0 ? '+' : '' }}{{ FinanceHelper::formatMoney($benefNet) }}</div>
+                <div class="kpi-value">{{ $benefNet >= 0 ? '+' : '' }}{{ \App\Helpers\FinanceHelper::formatMoney($benefNet) }}</div>
                 <div class="kpi-footer"><i class="bi bi-percent"></i> Marge {{ $margeKpi }}%</div>
             </div>
             <div class="kpi-glow"></div>
@@ -305,7 +305,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="top5-amount">{{ FinanceHelper::formatMoney($item->benefice ?? 0) }}</div>
+                                <div class="top5-amount">{{ \App\Helpers\FinanceHelper::formatMoney($item->benefice ?? 0) }}</div>
                                 <span class="ratio-pill {{ ($item->ratio ?? 0) >= 0 ? 'ratio-ok' : 'ratio-bad' }}">
                                     {{ $item->ratio }}%
                                 </span>

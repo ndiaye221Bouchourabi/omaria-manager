@@ -122,5 +122,5 @@ return [
         'nom_machine' => 'nom de la machine',
         'lieu' => 'lieu',
         'status' => 'statut',
-    ],
+    ]
 ];

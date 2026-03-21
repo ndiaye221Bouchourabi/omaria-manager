@@ -30,11 +30,10 @@ Route::post('/invitation/{token}', [UserController::class, 'acceptStore'])
     ->name('invitation.accept.store');
 
 // ✅ Routes publiques réinitialisation mot de passe
-Route::get('/reset-password/{token}', [PasswordResetLinkController::class, 'form'])
+Route::get('/set-password/{token}', [PasswordResetLinkController::class, 'form'])
     ->name('password.reset.form');
-Route::post('/reset-password/{token}', [PasswordResetLinkController::class, 'store'])
+Route::post('/set-password/{token}', [PasswordResetLinkController::class, 'store'])
     ->name('password.reset.store');
-
 // ✅ Routes PROTÉGÉES
 Route::middleware(['auth', 'role'])->group(function () {
 

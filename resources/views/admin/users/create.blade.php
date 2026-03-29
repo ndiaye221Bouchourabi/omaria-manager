@@ -141,7 +141,7 @@
             <input type="text" name="name"
                    class="form-input-premium {{ $errors->has('name') ? 'is-invalid' : '' }}"
                    value="{{ old('name') }}"
-                   placeholder="Ex : Mamadou Diallo"
+                   placeholder="Ex : Cheikh Ndiaye"
                    required autofocus>
             @error('name') <div class="invalid-feedback">{{ $message }}</div> @enderror
         </div>
@@ -152,7 +152,7 @@
             <input type="email" name="email"
                    class="form-input-premium {{ $errors->has('email') ? 'is-invalid' : '' }}"
                    value="{{ old('email') }}"
-                   placeholder="m.diallo@omaria.sn"
+                   placeholder="ndiaye.cheikh@gmail.com"
                    required>
             @error('email') <div class="invalid-feedback">{{ $message }}</div> @enderror
         </div>

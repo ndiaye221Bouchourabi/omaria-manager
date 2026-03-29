@@ -4,7 +4,7 @@
     <div class="container-fluid px-4 py-4">
 
         <!-- Header -->
-        <div class="premium-header d-flex justify-content-between align-items-center">
+        <div class="premium-header">
             <div>
                 <h1 class="premium-title">Points de Distribution</h1>
                 <div class="premium-subtitle">
@@ -12,12 +12,11 @@
                     Gérez l'emplacement et la disponibilité de vos machines
                 </div>
             </div>
-            <div class="d-flex align-items-center gap-3">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
                 <div class="premium-badge">
                     <i class="bi bi-grid-3x3-gap-fill"></i>
                     {{ $stats['total'] }} unités
                 </div>
-                {{-- Bouton ajout — admin + proprietaire + gestionnaire --}}
                 @if(in_array(auth()->user()->role, ['admin', 'proprietaire', 'gestionnaire']))
                     <button class="btn-primary-premium" data-bs-toggle="modal" data-bs-target="#addPointModal">
                         <i class="bi bi-plus-lg"></i> Nouveau Point
@@ -40,29 +39,29 @@
         @endif
 
         <!-- Statistiques -->
-        <div class="row g-4 mb-5">
-            <div class="col-md-3">
+        <div class="row g-3 g-md-4 mb-4 mb-md-5">
+            <div class="col-6 col-md-3">
                 <div class="stat-card">
                     <div class="stat-label">Total Points</div>
                     <div class="stat-value">{{ $stats['total'] }}</div>
                     <i class="bi bi-building stat-icon"></i>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <div class="stat-card">
                     <div class="stat-label">En Service</div>
                     <div class="stat-value" style="color:var(--premium-success);">{{ $stats['actifs'] }}</div>
                     <i class="bi bi-check-circle-fill stat-icon" style="color:var(--premium-success);"></i>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <div class="stat-card">
                     <div class="stat-label">En Maintenance</div>
                     <div class="stat-value" style="color:var(--premium-warning);">{{ $stats['inactifs'] }}</div>
                     <i class="bi bi-tools stat-icon" style="color:var(--premium-warning);"></i>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <div class="stat-card">
                     <div class="stat-label">Taux d'activité</div>
                     <div class="stat-value">{{ $stats['taux_activite'] }}%</div>
@@ -78,9 +77,9 @@
                     <h6 class="fw-bold mb-1" style="color:var(--text-primary);">Liste des unités opérationnelles</h6>
                     <small class="text-muted">{{ $stats['actifs'] }} points actifs sur {{ $stats['total'] }}</small>
                 </div>
-                <div class="d-flex gap-2">
-                    <input type="text" class="form-control form-control-sm" placeholder="Rechercher..."
-                        style="border-radius:30px;width:200px;" id="searchInput">
+                <div>
+                    <input type="text" class="form-control form-control-sm" placeholder="Rechercher…"
+                        style="border-radius:30px;min-width:180px;" id="searchInput">
                 </div>
             </div>
 
@@ -89,9 +88,9 @@
                     <thead>
                         <tr>
                             <th>Machine</th>
-                            <th>Localisation</th>
+                            <th class="d-none d-sm-table-cell">Localisation</th>
                             <th>Statut</th>
-                            <th>Activité</th>
+                            <th class="d-none d-md-table-cell">Activité</th>
                             <th class="text-end">Actions</th>
                         </tr>
                     </thead>
@@ -104,10 +103,15 @@
                                         <div>
                                             <span class="fw-bold d-block">{{ $p->nom_machine }}</span>
                                             <small class="text-muted">ID: #{{ $p->id }}</small>
+                                            {{-- Localisation visible uniquement sur très petits écrans sous le nom --}}
+                                            <small class="text-muted d-block d-sm-none">
+                                                <i class="bi bi-geo-alt" style="color:var(--premium-danger);"></i>
+                                                {{ $p->lieu }}
+                                            </small>
                                         </div>
                                     </div>
                                 </td>
-                                <td>
+                                <td class="d-none d-sm-table-cell">
                                     <div class="d-flex align-items-center">
                                         <i class="bi bi-geo-alt me-2" style="color:var(--premium-danger);"></i>
                                         {{ $p->lieu }}
@@ -115,13 +119,20 @@
                                 </td>
                                 <td>
                                     @if($p->status == 'Actif')
-                                        <span class="status-badge active"><i class="bi bi-check-circle-fill"></i>
-                                            Opérationnel</span>
+                                        <span class="status-badge active">
+                                            <i class="bi bi-check-circle-fill"></i>
+                                            <span class="d-none d-md-inline">Opérationnel</span>
+                                            <span class="d-inline d-md-none">Actif</span>
+                                        </span>
                                     @else
-                                        <span class="status-badge inactive"><i class="bi bi-pause-circle-fill"></i> En arrêt</span>
+                                        <span class="status-badge inactive">
+                                            <i class="bi bi-pause-circle-fill"></i>
+                                            <span class="d-none d-md-inline">En arrêt</span>
+                                            <span class="d-inline d-md-none">Arrêt</span>
+                                        </span>
                                     @endif
                                 </td>
-                                <td>
+                                <td class="d-none d-md-table-cell">
                                     <span class="text-muted small">
                                         <i class="bi bi-arrow-up-short text-success"></i>
                                         {{ $p->collectes_count ?? 0 }} collectes
@@ -129,16 +140,12 @@
                                 </td>
                                 <td class="text-end">
                                     <div class="d-flex justify-content-end gap-2" onclick="event.stopPropagation();">
-
-                                        {{-- Modifier — admin + proprietaire + gestionnaire --}}
                                         @if(in_array(auth()->user()->role, ['admin', 'proprietaire', 'gestionnaire']))
                                             <button class="action-btn" data-bs-toggle="modal"
                                                 data-bs-target="#editPoint{{ $p->id }}" title="Modifier">
                                                 <i class="bi bi-pencil-square fs-6"></i>
                                             </button>
                                         @endif
-
-                                        {{-- Supprimer — admin + proprietaire uniquement --}}
                                         @if(in_array(auth()->user()->role, ['admin', 'proprietaire']))
                                             <form action="{{ route('points.destroy', $p->id) }}" method="POST" class="d-inline"
                                                 onsubmit="event.stopPropagation(); return confirm('⚠️ Supprimer ce point ? Action irréversible.');">
@@ -148,7 +155,6 @@
                                                 </button>
                                             </form>
                                         @endif
-
                                     </div>
                                 </td>
                             </tr>
@@ -175,10 +181,10 @@
         </div>
     </div>
 
-    <!-- MODAL AJOUT -->
+    <!-- ══════════════════════ MODAL AJOUT ══════════════════════ -->
     @if(in_array(auth()->user()->role, ['admin', 'proprietaire', 'gestionnaire']))
         <div class="modal fade premium-modal" id="addPointModal" tabindex="-1">
-            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <form action="{{ route('points.store') }}" method="POST" class="modal-content">
                     @csrf
                     <div class="modal-header-premium">
@@ -191,26 +197,26 @@
                     <div class="modal-body-premium">
                         <div class="mb-4">
                             <label class="premium-input-label">Nom d'identification</label>
-                            <input type="text" name="nom_machine" class="premium-input w-100"
-                                placeholder="ex: MACHINE-CENTRE-01" value="{{ old('nom_machine') }}" required>
+                            <input type="text" name="nom_machine" class="premium-input" placeholder="ex: MACHINE-CENTRE-01"
+                                value="{{ old('nom_machine') }}" required>
                         </div>
                         <div class="mb-4">
                             <label class="premium-input-label">Emplacement</label>
-                            <input type="text" name="lieu" class="premium-input w-100"
+                            <input type="text" name="lieu" class="premium-input"
                                 placeholder="ex: Quartier Central, Avenue Principale" value="{{ old('lieu') }}" required>
                         </div>
                         <div class="mb-4">
                             <label class="premium-input-label">Statut initial</label>
-                            <select name="status" class="premium-input w-100">
-                                <option value="Actif" selected>🟢 Actif - Prêt à l'emploi</option>
-                                <option value="Inactif">🔴 Inactif - En maintenance</option>
+                            <select name="status" class="premium-input">
+                                <option value="Actif" selected>🟢 Actif — Prêt à l'emploi</option>
+                                <option value="Inactif">🔴 Inactif — En maintenance</option>
                             </select>
                         </div>
                     </div>
                     <div class="modal-footer-premium">
-                        <button type="button" class="btn btn-light w-100 py-3 rounded-4"
+                        <button type="button" class="btn btn-light flex-fill py-3 rounded-4"
                             data-bs-dismiss="modal">Annuler</button>
-                        <button type="submit" class="btn-primary-premium w-100 py-3 justify-content-center">
+                        <button type="submit" class="btn-primary-premium flex-fill py-3 justify-content-center">
                             <i class="bi bi-check-lg"></i> Créer le point
                         </button>
                     </div>
@@ -219,11 +225,11 @@
         </div>
     @endif
 
-    <!-- MODALS ÉDITION -->
+    <!-- ══════════════════════ MODALS ÉDITION ══════════════════════ -->
     @if(in_array(auth()->user()->role, ['admin', 'proprietaire', 'gestionnaire']))
         @foreach($points as $p)
             <div class="modal fade premium-modal" id="editPoint{{ $p->id }}" tabindex="-1">
-                <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                     <form action="{{ route('points.update', $p->id) }}" method="POST" class="modal-content">
                         @csrf @method('PUT')
                         <div class="modal-header-premium" style="background:linear-gradient(145deg,#1a2639,#2d3748);">
@@ -236,22 +242,21 @@
                         <div class="modal-body-premium">
                             <div class="mb-4">
                                 <label class="premium-input-label">Nom d'identification</label>
-                                <input type="text" name="nom_machine" class="premium-input w-100" value="{{ $p->nom_machine }}"
-                                    required>
+                                <input type="text" name="nom_machine" class="premium-input" value="{{ $p->nom_machine }}" required>
                             </div>
                             <div class="mb-4">
                                 <label class="premium-input-label">Emplacement</label>
-                                <input type="text" name="lieu" class="premium-input w-100" value="{{ $p->lieu }}" required>
+                                <input type="text" name="lieu" class="premium-input" value="{{ $p->lieu }}" required>
                             </div>
                             <div class="mb-4">
                                 <label class="premium-input-label">Statut</label>
-                                <select name="status" class="premium-input w-100">
-                                    <option value="Actif" {{ $p->status == 'Actif' ? 'selected' : '' }}>🟢 Actif - En service</option>
-                                    <option value="Inactif" {{ $p->status == 'Inactif' ? 'selected' : '' }}>🔴 Inactif - Maintenance
+                                <select name="status" class="premium-input">
+                                    <option value="Actif" {{ $p->status == 'Actif' ? 'selected' : '' }}>🟢 Actif — En service</option>
+                                    <option value="Inactif" {{ $p->status == 'Inactif' ? 'selected' : '' }}>🔴 Inactif — Maintenance
                                     </option>
                                 </select>
                             </div>
-                            @if($p->collectes_count > 0 || $p->depenses_count > 0)
+                            @if(($p->collectes_count ?? 0) > 0 || ($p->depenses_count ?? 0) > 0)
                                 <div class="alert alert-light small p-3 rounded-4">
                                     <i class="bi bi-info-circle me-2"></i>
                                     Ce point a {{ $p->collectes_count }} collecte(s) et {{ $p->depenses_count }} dépense(s)
@@ -259,9 +264,9 @@
                             @endif
                         </div>
                         <div class="modal-footer-premium">
-                            <button type="button" class="btn btn-light w-100 py-3 rounded-4"
+                            <button type="button" class="btn btn-light flex-fill py-3 rounded-4"
                                 data-bs-dismiss="modal">Annuler</button>
-                            <button type="submit" class="btn-primary-premium w-100 py-3 justify-content-center">
+                            <button type="submit" class="btn-primary-premium flex-fill py-3 justify-content-center">
                                 <i class="bi bi-check-lg"></i> Mettre à jour
                             </button>
                         </div>
@@ -273,15 +278,17 @@
 
     <script>
         document.getElementById('searchInput')?.addEventListener('keyup', function () {
-            let searchValue = this.value.toLowerCase();
+            const v = this.value.toLowerCase();
             document.querySelectorAll('#pointsTable tbody tr').forEach(row => {
-                row.style.display = row.textContent.toLowerCase().includes(searchValue) ? '' : 'none';
+                row.style.display = row.textContent.toLowerCase().includes(v) ? '' : 'none';
             });
         });
+
         setTimeout(() => {
-            document.querySelectorAll('.premium-alert').forEach(alert => {
-                alert.style.transition = 'opacity 0.5s'; alert.style.opacity = '0';
-                setTimeout(() => alert.remove(), 500);
+            document.querySelectorAll('.premium-alert').forEach(a => {
+                a.style.transition = 'opacity 0.5s';
+                a.style.opacity = '0';
+                setTimeout(() => a.remove(), 500);
             });
         }, 5000);
     </script>

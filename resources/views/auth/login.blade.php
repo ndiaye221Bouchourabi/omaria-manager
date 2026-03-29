@@ -17,7 +17,7 @@
             font-family: 'DM Sans', sans-serif;
             min-height: 100vh;
             display: flex;
-            overflow: hidden;
+            overflow-x: hidden;
         }
 
         /* ---- Panneau gauche ---- */
@@ -42,13 +42,41 @@
         .brand-waves.back { bottom: 10px; opacity: 0.5; animation: wave 20s linear infinite reverse; }
         @keyframes wave { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
-        .brand-logo { display: flex; align-items: center; gap: 12px; position: relative; z-index: 1; }
+        .brand-logo { display: flex; align-items: center; gap: 16px; position: relative; z-index: 1; }
+
+        /* Badge ovale — même style que le logo du formulaire */
         .brand-logo-box {
-            width: 44px; height: 44px; background: white; border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            overflow: hidden; box-shadow: 0 4px 16px rgba(6,13,31,0.4);
+            width: 110px;
+            height: 50px;
+            position: relative;
+            border-radius: 30px;
+            flex-shrink: 0;
         }
-        .brand-logo-box img { width: 100%; height: 100%; object-fit: cover; }
+        /* Anneau animé bleu clair */
+        .brand-logo-box::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 32px;
+           
+        }
+        /* Fond blanc intérieur */
+        .brand-logo-box::after {
+            content: '';
+            position: absolute;
+            inset: 2px;
+            border-radius: 28px;
+            background: white;
+            z-index: 1;
+        }
+        .brand-logo-box img {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 6px 10px;
+        }
         .brand-name { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.2rem; color: white; letter-spacing: 3px; }
 
         .brand-center { position: relative; z-index: 1; }
@@ -62,10 +90,11 @@
 
         /* ---- Panneau droit ---- */
         .login-form-panel {
-            flex: 1; background: #f0f4f8;
+            flex: 1;
+            background: #eef6fb;
             background-image:
-                radial-gradient(ellipse 500px 400px at 80% 10%, rgba(59,130,246,0.05) 0%, transparent 60%),
-                radial-gradient(ellipse 300px 300px at 20% 90%, rgba(245,158,11,0.04) 0%, transparent 50%);
+                radial-gradient(ellipse 500px 400px at 80% 10%, rgba(56,189,248,0.10) 0%, transparent 60%),
+                radial-gradient(ellipse 300px 300px at 20% 90%, rgba(14,165,233,0.07) 0%, transparent 50%);
             display: flex; align-items: center; justify-content: center; padding: 2rem;
         }
 
@@ -78,14 +107,89 @@
         }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* ════════════════════════════════════════════
+           ✅ LOGO O'MARIA — style ovale bleu clair
+           ressemblant au badge Ma.G / O'Maria image 2
+           ════════════════════════════════════════════ */
         .login-card-header { text-align: center; margin-bottom: 2rem; }
-        .login-logo-icon {
-            width: 52px; height: 52px;
-            background: linear-gradient(135deg, #0f2252, #1d4088);
-            border-radius: 14px; display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 1rem; box-shadow: 0 6px 18px rgba(13,40,88,0.3);
+
+        /* Conteneur ovale extérieur — imite le badge blanc ovale */
+        .login-logo-wrap {
+            margin: 0 auto 1.4rem;
+            width: 200px;
+            height: 90px;
+            position: relative;
+            border-radius: 50px;         /* bord très arrondi = ovale */
+            background: #ffffff;
+            /* Ombre portée douce bleue comme sur le badge */
+            box-shadow:
+                0 0 0 3px rgba(56,189,248,0.30),
+                0 0 0 6px rgba(56,189,248,0.12),
+                0 10px 32px rgba(14,100,160,0.18);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .login-logo-icon i { color: white; font-size: 22px; }
+
+        /* Anneau tournant bleu-ciel + cyan autour de l'ovale */
+        .login-logo-wrap::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 54px;
+            background: conic-gradient(
+                from 0deg,
+                #0b0386fb  0%,
+                #0b0386fb 25%,
+                #bae6fd 50%,
+               #0b0386fb  75%,
+               #0b0386fb  100%
+            );
+            animation: spin-ring 3.5s linear infinite;
+            z-index: 0;
+        }
+
+        /* Fond blanc intérieur qui masque l'anneau derrière l'image */
+        .login-logo-wrap::after {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            border-radius: 48px;
+            background: white;
+            z-index: 1;
+        }
+
+        @keyframes spin-ring {
+            from { transform: rotate(0deg); }
+            to   { transform: rotate(360deg); }
+        }
+
+        /* Image du logo — reste au-dessus du pseudo-element blanc */
+        .login-logo-img {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: center;
+            padding: 10px 16px;
+        }
+
+        /* Badge "Ma.G" au-dessus à gauche — détail du badge image 2 */
+        .logo-badge-label {
+            position: absolute;
+            top: 8px;
+            left: 16px;
+            z-index: 3;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 9px;
+            font-weight: 600;
+            color: #0369a1;
+            letter-spacing: 0.5px;
+            opacity: 0.8;
+        }
+
         .login-title { font-family: 'Sora', sans-serif; font-size: 1.5rem; font-weight: 800; color: #0f172a; margin-bottom: 6px; }
         .login-sub { font-size: 13.5px; color: #64748b; }
 
@@ -118,14 +222,14 @@
             font-family: 'DM Sans', sans-serif; font-size: 14px; color: #0f172a;
             background: white; outline: none; transition: all 0.2s;
         }
-        .form-input-p:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.12); }
-        .form-input-wrap:focus-within .form-input-icon { color: #3b82f6; }
+        .form-input-p:focus { border-color: #38bdf8; box-shadow: 0 0 0 3px rgba(56,189,248,0.15); }
+        .form-input-wrap:focus-within .form-input-icon { color: #38bdf8; }
 
         .toggle-password {
             position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
             background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 16px; padding: 2px; transition: color 0.2s;
         }
-        .toggle-password:hover { color: #3b82f6; }
+        .toggle-password:hover { color: #38bdf8; }
 
         /* Ligne remember + forgot */
         .form-extras {
@@ -133,26 +237,30 @@
             margin-bottom: 1.5rem; font-size: 13px;
         }
         .form-check-label { display: flex; align-items: center; gap: 7px; color: #475569; cursor: pointer; }
-        .form-check-input-p { width: 16px; height: 16px; border: 1.5px solid rgba(15,34,82,0.2); border-radius: 4px; accent-color: #3b82f6; cursor: pointer; }
+        .form-check-input-p { width: 16px; height: 16px; border: 1.5px solid rgba(15,34,82,0.2); border-radius: 4px; accent-color: #38bdf8; cursor: pointer; }
         .forgot-link {
-            color: #3b82f6; text-decoration: none; font-weight: 500; font-size: 13px;
+            color: #38bdf8; text-decoration: none; font-weight: 500; font-size: 13px;
             display: flex; align-items: center; gap: 4px; transition: color 0.2s;
         }
-        .forgot-link:hover { color: #1d4ed8; text-decoration: underline; }
+        .forgot-link:hover { color: #0ea5e9; text-decoration: underline; }
 
-        /* Bouton connexion */
+        /* Bouton connexion — bleu clair */
         .btn-login {
             width: 100%; padding: 12px;
-            background: linear-gradient(135deg, #0f2252, #1d4088);
+            background: linear-gradient(135deg, #090170, #0572a1);
             color: white; border: none; border-radius: 12px;
             font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 700;
             cursor: pointer; transition: all 0.2s cubic-bezier(0.34,1.3,0.64,1);
             display: flex; align-items: center; justify-content: center; gap: 8px;
-            box-shadow: 0 4px 14px rgba(13,40,88,0.3);
+            box-shadow: 0 4px 14px rgba(14,165,233,0.35);
         }
-        .btn-login:hover { background: linear-gradient(135deg, #163068, #2554b0); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(13,40,88,0.4); }
+        .btn-login:hover {
+            background: linear-gradient(135deg, #0284c7, #0ea5e9);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(14,165,233,0.45);
+        }
 
-        /* Niveaux d'accès — 4 rôles en 2x2 */
+        /* Niveaux d'accès */
         .roles-section { margin-top: 1.75rem; padding-top: 1.5rem; border-top: 1px solid rgba(15,34,82,0.08); }
         .roles-title {
             font-family: 'Sora', sans-serif; font-size: 11px; font-weight: 600;
@@ -160,26 +268,116 @@
             text-align: center; margin-bottom: 12px;
         }
         .roles-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-        .role-card { padding: 10px 8px; border-radius: 10px; border: 1.5px solid transparent; text-align: center; cursor: default; transition: all 0.2s; }
-        .role-card.admin        { background: rgba(245,158,11,0.06);  border-color: rgba(245,158,11,0.2); }
-        .role-card.proprietaire { background: rgba(139,92,246,0.06);  border-color: rgba(139,92,246,0.2); }
-        .role-card.gestionnaire { background: rgba(59,130,246,0.06);  border-color: rgba(59,130,246,0.2); }
-        .role-card.collecteur   { background: rgba(16,185,129,0.06);  border-color: rgba(16,185,129,0.2); }
-        .role-card-icon { font-size: 18px; margin-bottom: 4px; display: block; }
-        .role-card.admin        .role-card-icon { color: #f59e0b; }
+        .role-card {
+            padding: 12px 8px; border-radius: 12px; border: 1.5px solid transparent;
+            text-align: center; cursor: default; transition: all 0.2s;
+        }
+        .role-card:hover { transform: translateY(-2px); }
+
+        /* Propriétaire — violet */
+        .role-card.proprietaire { background: rgba(139,92,246,0.06); border-color: rgba(139,92,246,0.2); }
         .role-card.proprietaire .role-card-icon { color: #8b5cf6; }
-        .role-card.gestionnaire .role-card-icon { color: #3b82f6; }
-        .role-card.collecteur   .role-card-icon { color: #10b981; }
-        .role-card-name { font-family: 'Sora', sans-serif; font-size: 11px; font-weight: 600; display: block; margin-bottom: 2px; }
-        .role-card.admin        .role-card-name { color: #92400e; }
         .role-card.proprietaire .role-card-name { color: #4c1d95; }
-        .role-card.gestionnaire .role-card-name { color: #1e40af; }
-        .role-card.collecteur   .role-card-name { color: #065f46; }
+
+        /* Gestionnaire — bleu clair sky */
+        .role-card.gestionnaire { background: rgba(56,189,248,0.07); border-color: rgba(56,189,248,0.25); }
+        .role-card.gestionnaire .role-card-icon { color: #0ea5e9; }
+        .role-card.gestionnaire .role-card-name { color: #0369a1; }
+
+        /* Collecteur — vert */
+        .role-card.collecteur { background: rgba(16,185,129,0.06); border-color: rgba(16,185,129,0.2); }
+        .role-card.collecteur .role-card-icon { color: #10b981; }
+        .role-card.collecteur .role-card-name { color: #065f46; }
+
+        /* Icônes rôles — plus jolies avec cercle de fond */
+        .role-card-icon-wrap {
+            width: 38px; height: 38px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 6px;
+        }
+        .role-card.proprietaire .role-card-icon-wrap { background: rgba(139,92,246,0.12); }
+        .role-card.gestionnaire .role-card-icon-wrap { background: rgba(56,189,248,0.12); }
+        .role-card.collecteur   .role-card-icon-wrap { background: rgba(16,185,129,0.12); }
+
+        .role-card-icon { font-size: 18px; display: block; }
+        .role-card-name { font-family: 'Sora', sans-serif; font-size: 11px; font-weight: 700; display: block; margin-bottom: 2px; }
         .role-card-desc { font-size: 10px; color: #94a3b8; line-height: 1.3; }
 
-        @media (max-width: 768px) {
-            .login-brand { display: none; }
-            .login-form-panel { padding: 1rem; }
+        /* ---- Responsive ---- */
+
+        /* Grand desktop */
+        @media (max-width: 1200px) {
+            .login-brand { width: 42%; padding: 2.5rem 2rem; }
+            .brand-tagline { font-size: 2rem; }
+        }
+
+        /* Tablette paysage — côte à côte, panneau gauche compact */
+        @media (max-width: 992px) {
+            .login-brand {
+                width: 40%;
+                padding: 2rem 1.75rem;
+                min-height: 100vh;
+            }
+            .brand-tagline { font-size: 1.65rem; }
+            .brand-desc { font-size: 12.5px; }
+            .brand-stat-value { font-size: 1.3rem; }
+            .brand-stats { gap: 1.25rem; }
+            .login-form-panel { padding: 1.5rem 1rem; }
+            .login-card { padding: 2rem 1.5rem; }
+        }
+
+        /* Tablette portrait — côte à côte encore plus compact */
+        @media (max-width: 850px) {
+            .login-brand {
+                width: 36%;
+                padding: 1.75rem 1.25rem;
+            }
+            .brand-tagline { font-size: 1.35rem; }
+            .brand-desc { font-size: 12px; max-width: 220px; }
+            .brand-stat-value { font-size: 1.1rem; }
+            .brand-stat-label { font-size: 10px; }
+            .brand-stats { gap: 1rem; }
+            .brand-name { font-size: 1rem; letter-spacing: 2px; }
+            .login-card { padding: 1.75rem 1.25rem; }
+        }
+
+        /* Mobile — panneau gauche totalement masqué */
+        @media (max-width: 767px) {
+            body {
+                flex-direction: column;
+                overflow-y: auto;
+                overflow-x: hidden;
+            }
+
+            /* CACHE sur mobile */
+            .login-brand {
+                display: none !important;
+            }
+
+            /* Formulaire centré plein écran */
+            .login-form-panel {
+                width: 100%;
+                min-height: 100vh;
+                padding: 2rem 1.25rem;
+                background: #eef6fb;
+                align-items: center;
+            }
+
+            .login-card {
+                padding: 2rem 1.5rem;
+                border-radius: 20px;
+                margin: 0 auto;
+                box-shadow: 0 4px 24px rgba(6,13,31,0.10);
+            }
+
+            .login-logo-wrap { width: 180px; height: 80px; }
+            .roles-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 400px) {
+            .login-card { padding: 1.5rem 1rem; }
+            .roles-grid { grid-template-columns: 1fr; }
+            .login-logo-wrap { width: 160px; height: 72px; }
         }
     </style>
 </head>
@@ -230,15 +428,21 @@
     <div class="login-form-panel">
         <div class="login-card">
 
+            {{-- ✅ Logo O'Maria — ovale bleu clair avec anneau animé --}}
             <div class="login-card-header">
-                <div class="login-logo-icon">
-                    <i class="bi bi-droplet-fill"></i>
+                <div class="login-logo-wrap">
+                    <span class="logo-badge-label">Ma.G</span>
+                    <img
+                        src="{{ asset('img/logo.jpeg') }}"
+                        alt="O'Maria"
+                        class="login-logo-img"
+                    >
                 </div>
                 <h2 class="login-title">Bienvenue</h2>
                 <p class="login-sub">Connectez-vous à votre espace de gestion</p>
             </div>
 
-            {{-- Message succès (ex: email réinitialisation envoyé) --}}
+            {{-- Message succès --}}
             @if(session('status'))
                 <div class="form-success">
                     <i class="bi bi-check-circle-fill"></i>
@@ -267,9 +471,9 @@
                 <div class="form-group">
                     <label class="form-label-p" for="email">Adresse email</label>
                     <div class="form-input-wrap">
-                        <i class="bi bi-envelope form-input-icon"></i>
+                        <i class="bi bi-envelope-fill form-input-icon"></i>
                         <input type="email" id="email" name="email" class="form-input-p"
-                               value="{{ old('email') }}" placeholder="admin@omaria.sn"
+                               value="{{ old('email') }}" placeholder="admin@gmail.com"
                                autocomplete="email" required autofocus>
                     </div>
                 </div>
@@ -277,26 +481,24 @@
                 <div class="form-group">
                     <label class="form-label-p" for="password">Mot de passe</label>
                     <div class="form-input-wrap">
-                        <i class="bi bi-lock form-input-icon"></i>
+                        <i class="bi bi-lock-fill form-input-icon"></i>
                         <input type="password" id="password" name="password" class="form-input-p"
                                placeholder="••••••••" autocomplete="current-password" required>
                         <button type="button" class="toggle-password" onclick="togglePwd()">
-                            <i class="bi bi-eye" id="pwd-eye"></i>
+                            <i class="bi bi-eye-fill" id="pwd-eye"></i>
                         </button>
                     </div>
                 </div>
 
-                {{-- Remember me + Mot de passe oublié --}}
                 <div class="form-extras">
                     <label class="form-check-label">
                         <input type="checkbox" class="form-check-input-p" name="remember">
                         Se souvenir de moi
                     </label>
-
-                   <span class="forgot-link" style="color:#94a3b8; cursor:default;">
-    <i class="bi bi-key"></i>
-    Contactez votre admin
-</span>
+                    <span class="forgot-link" style="color:#94a3b8; cursor:default;">
+                        <i class="bi bi-key-fill"></i>
+                        Contactez votre admin
+                    </span>
                 </div>
 
                 <button type="submit" class="btn-login">
@@ -305,31 +507,31 @@
                 </button>
             </form>
 
-            {{-- Niveaux d'accès — 4 rôles --}}
+            {{-- Niveaux d'accès --}}
             <div class="roles-section">
                 <p class="roles-title">Niveaux d'accès</p>
                 <div class="roles-grid">
-
-                    
-
                     <div class="role-card proprietaire">
-                        <i class="bi bi-house-fill role-card-icon"></i>
+                        <div class="role-card-icon-wrap">
+                            <i class="bi bi-shield-fill-check role-card-icon"></i>
+                        </div>
                         <span class="role-card-name">Propriétaire</span>
                         <span class="role-card-desc">Gestion complète</span>
                     </div>
-
                     <div class="role-card gestionnaire">
-                        <i class="bi bi-person-badge-fill role-card-icon"></i>
+                        <div class="role-card-icon-wrap">
+                            <i class="bi bi-person-badge-fill role-card-icon"></i>
+                        </div>
                         <span class="role-card-name">Gestionnaire</span>
                         <span class="role-card-desc">Collectes + dépenses</span>
                     </div>
-
                     <div class="role-card collecteur">
-                        <i class="bi bi-basket-fill role-card-icon"></i>
+                        <div class="role-card-icon-wrap">
+                            <i class="bi bi-droplet-fill role-card-icon"></i>
+                        </div>
                         <span class="role-card-name">Collecteur</span>
                         <span class="role-card-desc">Saisie collectes</span>
                     </div>
-
                 </div>
             </div>
 
@@ -342,10 +544,10 @@
             const eye = document.getElementById('pwd-eye');
             if (pwd.type === 'password') {
                 pwd.type = 'text';
-                eye.className = 'bi bi-eye-slash';
+                eye.className = 'bi bi-eye-slash-fill';
             } else {
                 pwd.type = 'password';
-                eye.className = 'bi bi-eye';
+                eye.className = 'bi bi-eye-fill';
             }
         }
     </script>

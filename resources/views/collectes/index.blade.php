@@ -6,7 +6,7 @@
     <div class="container-fluid px-4 py-4">
 
         <!-- Header -->
-        <div class="page-header d-flex justify-content-between align-items-center">
+        <div class="page-header">
             <div>
                 <h1 class="page-title">Collectes</h1>
                 <p class="page-subtitle">
@@ -27,29 +27,29 @@
         @endif
 
         <!-- Statistiques -->
-        <div class="row g-4 mb-5">
-            <div class="col-md-3">
+        <div class="row g-3 g-md-4 mb-4 mb-md-5">
+            <div class="col-6 col-md-3">
                 <div class="stat-card">
                     <div class="stat-label">Total Collectes</div>
                     <div class="stat-value">{{ FinanceHelper::formatMoney($stats['total_global'] ?? 0) }}</div>
                     <i class="bi bi-piggy-bank stat-icon"></i>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <div class="stat-card">
                     <div class="stat-label">Moyenne / Collecte</div>
                     <div class="stat-value">{{ FinanceHelper::formatMoney($stats['moyenne_globale'] ?? 0) }}</div>
                     <i class="bi bi-bar-chart stat-icon"></i>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <div class="stat-card">
                     <div class="stat-label">Points Actifs</div>
                     <div class="stat-value">{{ $stats['points_actifs'] ?? 0 }}/{{ $stats['total_points'] ?? 0 }}</div>
                     <i class="bi bi-geo-alt stat-icon"></i>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <div class="stat-card">
                     <div class="stat-label">Collectes affichées</div>
                     <div class="stat-value">{{ $nombreCollectes ?? 0 }}</div>
@@ -61,7 +61,7 @@
         <!-- Filtres -->
         <div class="filters-card">
             <form action="{{ route('collectes.index') }}" method="GET" class="row g-3 align-items-end">
-                <div class="col-lg-3 col-md-6">
+                <div class="col-12 col-sm-6 col-lg-3">
                     <div class="filter-label">Point de distribution</div>
                     <select name="point_id" class="premium-select" onchange="this.form.submit()">
                         <option value="">Tous les points</option>
@@ -72,7 +72,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-lg-2 col-md-6">
+                <div class="col-6 col-sm-6 col-lg-2">
                     <div class="filter-label">Année</div>
                     <select name="annee" class="premium-select" onchange="this.form.submit()">
                         <option value="">Toutes</option>
@@ -81,7 +81,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-lg-2 col-md-6">
+                <div class="col-6 col-sm-6 col-lg-2">
                     <div class="filter-label">Mois</div>
                     <select name="mois" class="premium-select" onchange="this.form.submit()">
                         <option value="">Tous</option>
@@ -92,7 +92,7 @@
                         @endfor
                     </select>
                 </div>
-                <div class="col-lg-2 col-md-6">
+                <div class="col-6 col-sm-6 col-lg-2">
                     <div class="filter-label">Semaine</div>
                     <select name="semaine" class="premium-select" onchange="this.form.submit()">
                         <option value="">Toutes</option>
@@ -101,7 +101,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-lg-3">
+                <div class="col-12 col-sm-6 col-lg-3">
                     @if(request()->anyFilled(['point_id', 'semaine', 'mois', 'annee']))
                         <a href="{{ route('collectes.index') }}" class="btn-reset">
                             <i class="bi bi-arrow-counterclockwise me-2"></i>Réinitialiser
@@ -112,7 +112,12 @@
         </div>
 
         <!-- Total filtré -->
-        <div class="row g-4 mb-4">
+        {{--
+        ✅ CORRECTION : Suppression du span .total-currency "FCFA"
+        car FinanceHelper::formatMoney() inclut déjà "FCFA" dans le montant formaté.
+        Cela évitait l'affichage "454 900 FCFA FCFA".
+        --}}
+        <div class="row g-3 g-md-4 mb-4">
             <div class="col-12">
                 <div class="total-card">
                     <div class="total-label">
@@ -120,7 +125,6 @@
                     </div>
                     <div class="total-value">
                         {{ FinanceHelper::formatMoney($totalFiltre ?? 0) }}
-                        <span class="total-currency">FCFA</span>
                     </div>
                     @if(($moyenneFiltre ?? 0) > 0)
                         <div class="mt-2 text-white-50">
@@ -138,8 +142,8 @@
                     <thead>
                         <tr>
                             <th>Point de Distribution</th>
-                            <th class="text-center">Semaine</th>
-                            <th>Date de Saisie</th>
+                            <th class="text-center d-none d-sm-table-cell">Semaine</th>
+                            <th class="d-none d-md-table-cell">Date de Saisie</th>
                             <th>Montant</th>
                             <th class="text-end">Actions</th>
                         </tr>
@@ -148,20 +152,24 @@
                         @forelse($collectes as $c)
                             <tr>
                                 <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="machine-avatar me-3"><i class="bi bi-shop"></i></div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="machine-avatar"><i class="bi bi-shop"></i></div>
                                         <div>
                                             <span class="fw-bold d-block">{{ $c->point->nom_machine }}</span>
-                                            <small class="text-muted">{{ $c->point->lieu }}</small>
+                                            <small class="text-muted d-block">{{ $c->point->lieu }}</small>
+                                            <small class="d-block d-sm-none text-muted mt-1">
+                                                <i class="bi bi-calendar-week" style="color:var(--premium-accent);"></i>
+                                                {{ $c->semaine }}
+                                            </small>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="text-center">
+                                <td class="text-center d-none d-sm-table-cell">
                                     <span class="week-badge">
                                         <i class="bi bi-calendar-week"></i> {{ $c->semaine }}
                                     </span>
                                 </td>
-                                <td>
+                                <td class="d-none d-md-table-cell">
                                     <div class="d-flex align-items-center text-muted">
                                         <i class="bi bi-calendar3 me-2"></i>
                                         {{ Carbon\Carbon::parse($c->date_collecte)->format('d M Y') }}
@@ -172,25 +180,34 @@
                                 </td>
                                 <td class="text-end">
                                     <div class="action-buttons">
-
-                                        {{-- Modifier — tous les rôles --}}
-                                        <button type="button" class="btn-edit" data-bs-toggle="modal"
+                                        {{-- ✅ Bouton Modifier avec icône crayon améliorée --}}
+                                        <button type="button" class="btn-action btn-action-edit" data-bs-toggle="modal"
                                             data-bs-target="#editCollecte{{ $c->id }}" title="Modifier">
-                                            <i class="bi bi-pencil"></i>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                                                fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                                                stroke-linejoin="round">
+                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                            </svg>
                                         </button>
-
-                                        {{-- Supprimer — admin + proprietaire uniquement --}}
+                                        {{-- ✅ Bouton Supprimer avec icône corbeille améliorée --}}
                                         @if(in_array(auth()->user()->role, ['admin', 'proprietaire']))
                                             <form action="{{ route('collectes.destroy', $c->id) }}" method="POST"
                                                 onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette collecte ?')"
                                                 style="display:inline;">
                                                 @csrf @method('DELETE')
-                                                <button type="submit" class="btn-delete" title="Supprimer">
-                                                    <i class="bi bi-trash"></i>
+                                                <button type="submit" class="btn-action btn-action-delete" title="Supprimer">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15"
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                                                        stroke-linecap="round" stroke-linejoin="round">
+                                                        <polyline points="3 6 5 6 21 6" />
+                                                        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+                                                        <path d="M10 11v6M14 11v6" />
+                                                        <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+                                                    </svg>
                                                 </button>
                                             </form>
                                         @endif
-
                                     </div>
                                 </td>
                             </tr>
@@ -214,12 +231,11 @@
         </div>
     </div>
 
-    <!-- MODAL AJOUT -->
+    <!-- ══════════════════════ MODAL AJOUT ══════════════════════ -->
     <div class="modal fade premium-modal" id="addCollecteModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <form action="{{ route('collectes.store') }}" method="POST" class="modal-content">
                 @csrf
-                {{-- Champ semaine caché — généré automatiquement par JS --}}
                 <input type="hidden" name="semaine" id="add_semaine">
 
                 <div class="modal-header-premium">
@@ -234,20 +250,17 @@
                     <div class="mb-4">
                         <label class="premium-input-label">Point de distribution *</label>
                         <select name="point_id" class="premium-input" required>
-                            <option value="">Sélectionner un point...</option>
+                            <option value="">Sélectionner un point…</option>
                             @foreach($points as $p)
-                                <option value="{{ $p->id }}">{{ $p->nom_machine }} - {{ $p->lieu }}</option>
+                                <option value="{{ $p->id }}">{{ $p->nom_machine }} — {{ $p->lieu }}</option>
                             @endforeach
                         </select>
                     </div>
-
                     <div class="mb-4">
                         <label class="premium-input-label">Date de collecte *</label>
                         <input type="date" name="date_collecte" id="add_date_collecte" class="premium-input"
                             value="{{ date('Y-m-d') }}" required oninput="updateSemaine('add')">
                     </div>
-
-                    {{-- Semaine calculée automatiquement — lecture seule --}}
                     <div class="mb-4">
                         <label class="premium-input-label">Semaine (calculée automatiquement)</label>
                         <div class="premium-input d-flex align-items-center gap-2"
@@ -256,7 +269,6 @@
                             <span id="add_semaine_text">—</span>
                         </div>
                     </div>
-
                     <div class="mb-4">
                         <label class="premium-input-label">Montant collecté (FCFA) *</label>
                         <div class="input-group-premium">
@@ -267,9 +279,9 @@
                 </div>
 
                 <div class="modal-footer-premium">
-                    <button type="button" class="btn btn-light w-100 py-3 rounded-4"
+                    <button type="button" class="btn btn-light flex-fill py-3 rounded-4"
                         data-bs-dismiss="modal">Annuler</button>
-                    <button type="submit" class="btn-primary-premium w-100 py-3 justify-content-center">
+                    <button type="submit" class="btn-primary-premium flex-fill py-3 justify-content-center">
                         <i class="bi bi-check-lg"></i> Enregistrer la collecte
                     </button>
                 </div>
@@ -277,13 +289,12 @@
         </div>
     </div>
 
-    <!-- MODALS ÉDITION -->
+    <!-- ══════════════════════ MODALS ÉDITION ══════════════════════ -->
     @foreach($collectes as $c)
         <div class="modal fade premium-modal" id="editCollecte{{ $c->id }}" tabindex="-1">
-            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <form action="{{ route('collectes.update', $c->id) }}" method="POST" class="modal-content">
                     @csrf @method('PUT')
-                    {{-- Champ semaine caché — mis à jour par JS --}}
                     <input type="hidden" name="semaine" id="edit_semaine_{{ $c->id }}" value="{{ $c->semaine }}">
 
                     <div class="modal-header-premium" style="background:linear-gradient(145deg,#1a2639,#2d3748);">
@@ -300,19 +311,16 @@
                             <select name="point_id" class="premium-input" required>
                                 @foreach($points as $p)
                                     <option value="{{ $p->id }}" {{ $c->point_id == $p->id ? 'selected' : '' }}>
-                                        {{ $p->nom_machine }} - {{ $p->lieu }}
+                                        {{ $p->nom_machine }} — {{ $p->lieu }}
                                     </option>
                                 @endforeach
                             </select>
                         </div>
-
                         <div class="mb-4">
                             <label class="premium-input-label">Date *</label>
                             <input type="date" name="date_collecte" id="edit_date_{{ $c->id }}" class="premium-input"
                                 value="{{ $c->date_collecte }}" required oninput="updateSemaineEdit({{ $c->id }})">
                         </div>
-
-                        {{-- Semaine calculée automatiquement — lecture seule --}}
                         <div class="mb-4">
                             <label class="premium-input-label">Semaine (calculée automatiquement)</label>
                             <div class="premium-input d-flex align-items-center gap-2"
@@ -321,7 +329,6 @@
                                 <span id="edit_semaine_text_{{ $c->id }}">{{ $c->semaine }}</span>
                             </div>
                         </div>
-
                         <div class="mb-4">
                             <label class="premium-input-label">Montant (FCFA) *</label>
                             <div class="input-group-premium">
@@ -332,9 +339,9 @@
                     </div>
 
                     <div class="modal-footer-premium">
-                        <button type="button" class="btn btn-light w-100 py-3 rounded-4"
+                        <button type="button" class="btn btn-light flex-fill py-3 rounded-4"
                             data-bs-dismiss="modal">Annuler</button>
-                        <button type="submit" class="btn-primary-premium w-100 py-3 justify-content-center">
+                        <button type="submit" class="btn-primary-premium flex-fill py-3 justify-content-center">
                             <i class="bi bi-check-lg"></i> Mettre à jour
                         </button>
                     </div>
@@ -344,11 +351,9 @@
     @endforeach
 
     <script>
-        // Calcule "S{semaine}-{année}" depuis une date
         function getSemaineLabel(dateStr) {
             if (!dateStr) return '—';
             const date = new Date(dateStr);
-            // Calcul ISO week number
             const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
             const dayNum = d.getUTCDay() || 7;
             d.setUTCDate(d.getUTCDate() + 4 - dayNum);
@@ -356,28 +361,20 @@
             const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
             return 'S' + weekNo + '-' + d.getUTCFullYear();
         }
-
-        // Pour le formulaire AJOUT
-        function updateSemaine(prefix) {
+        function updateSemaine() {
             const dateVal = document.getElementById('add_date_collecte').value;
             const label = getSemaineLabel(dateVal);
             document.getElementById('add_semaine').value = label;
             document.getElementById('add_semaine_text').textContent = label;
         }
-
-        // Pour les formulaires ÉDITION
         function updateSemaineEdit(id) {
             const dateVal = document.getElementById('edit_date_' + id).value;
             const label = getSemaineLabel(dateVal);
             document.getElementById('edit_semaine_' + id).value = label;
             document.getElementById('edit_semaine_text_' + id).textContent = label;
         }
-
-        // Initialiser la semaine au chargement pour le formulaire AJOUT
         document.addEventListener('DOMContentLoaded', function () {
-            updateSemaine('add');
-
-            // Auto-hide alertes
+            updateSemaine();
             setTimeout(() => {
                 document.querySelectorAll('.premium-alert').forEach(el => {
                     el.style.transition = 'all 0.5s';

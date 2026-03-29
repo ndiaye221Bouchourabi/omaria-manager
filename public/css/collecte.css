@@ -4,11 +4,12 @@
     --premium-blue: #1e3a8a;
     --premium-accent: #3b82f6;
     --premium-accent-light: #60a5fa;
+    /* ✅ Nouveau : bleu clair vif pour le bouton principal */
+    --premium-btn-from: #38bdf8;
+    --premium-btn-to: #7dd3fc;
     --premium-success: #10b981;
     --premium-warning: #f59e0b;
     --premium-danger: #ef4444;
-    --premium-purple: #8b5cf6;
-    --premium-purple-light: #a78bfa;
     --glass-bg: rgba(255, 255, 255, 0.95);
     --glass-border: rgba(255, 255, 255, 0.2);
     --card-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
@@ -59,58 +60,62 @@
     letter-spacing: 0.3px;
 }
 
-/* ─── Boutons d'en-tête ──────────────────────────────────────── */
-.btn-premium-point {
+/* ─── Bouton principal ───────────────────────────────────────── */
+/*
+ * ✅ CORRECTION : Bleu clair (sky-blue) au lieu du bleu foncé précédent.
+ * Utilise --premium-btn-from (#38bdf8) → --premium-btn-to (#7dd3fc) pour
+ * un rendu lumineux. Ombre colorée assortie.
+ */
+.btn-primary-premium {
     background: linear-gradient(
-        145deg,
-        var(--premium-purple),
-        var(--premium-purple-light)
+        135deg,
+        var(--premium-btn-from) 0%,
+        var(--premium-btn-to) 100%
     );
     border: none;
     border-radius: 40px;
-    padding: 0.75rem 1.4rem;
-    font-weight: 600;
+    padding: 0.75rem 1.6rem;
+    font-weight: 700;
     font-size: 0.9rem;
-    color: white;
-    box-shadow: 0 10px 20px -8px rgba(139, 92, 246, 0.5);
-    transition: all 0.3s ease;
+    color: #fff;
+    letter-spacing: 0.3px;
+    box-shadow:
+        0 8px 20px -6px rgba(56, 189, 248, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    white-space: nowrap;
     cursor: pointer;
+    white-space: nowrap;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
 }
 
-.btn-premium-global {
+.btn-primary-premium::before {
+    content: "";
+    position: absolute;
+    inset: 0;
     background: linear-gradient(
-        145deg,
-        var(--premium-accent),
-        var(--premium-accent-light)
+        135deg,
+        rgba(255, 255, 255, 0.2) 0%,
+        transparent 60%
     );
-    border: none;
-    border-radius: 40px;
-    padding: 0.75rem 1.4rem;
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: white;
-    box-shadow: 0 10px 20px -8px rgba(59, 130, 246, 0.5);
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    white-space: nowrap;
-    cursor: pointer;
+    border-radius: inherit;
+    pointer-events: none;
 }
 
-.btn-premium-point:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 15px 25px -8px rgba(139, 92, 246, 0.6);
-    color: white;
+.btn-primary-premium:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow:
+        0 16px 30px -8px rgba(56, 189, 248, 0.7),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    color: #fff;
 }
-.btn-premium-global:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 15px 25px -8px rgba(59, 130, 246, 0.6);
-    color: white;
+
+.btn-primary-premium:active {
+    transform: translateY(0) scale(0.98);
 }
 
 /* ─── Cartes de statistiques ─────────────────────────────────── */
@@ -146,6 +151,7 @@
     transform: translateY(-6px);
     box-shadow: 0 30px 60px -12px rgba(0, 89, 255, 0.3);
 }
+
 .stat-card:hover::before {
     opacity: 1;
 }
@@ -160,18 +166,12 @@
 }
 
 .stat-value {
-    font-size: clamp(1.1rem, 2.5vw, 1.8rem);
+    font-size: clamp(1.2rem, 3vw, 2rem);
     font-weight: 800;
     color: var(--premium-dark);
     line-height: 1.2;
     letter-spacing: -0.5px;
     word-break: break-word;
-}
-
-.stat-value small {
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: #94a3b8;
 }
 
 .stat-icon {
@@ -197,13 +197,14 @@
 .premium-select {
     border: 1px solid #e2e8f0;
     border-radius: 16px;
-    padding: 10px 16px;
+    padding: 12px 16px;
     font-weight: 500;
     color: var(--premium-dark);
     background-color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
     transition: all 0.3s ease;
-    min-width: 0;
     width: 100%;
+    min-width: 0;
     appearance: auto;
 }
 
@@ -231,13 +232,12 @@
     background: white;
     border: 1px solid #e2e8f0;
     border-radius: 16px;
-    padding: 10px 20px;
+    padding: 12px 16px;
     color: #64748b;
     transition: all 0.3s ease;
     text-decoration: none;
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 8px;
     justify-content: center;
     width: 100%;
     white-space: nowrap;
@@ -249,22 +249,13 @@
     border-color: var(--premium-danger);
 }
 
-/* ─── Total Cards ────────────────────────────────────────────── */
-.total-card-point {
-    background: linear-gradient(
-        145deg,
-        var(--premium-purple),
-        var(--premium-purple-light)
-    );
-    border-radius: 24px;
-    padding: 1.5rem;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 20px 40px -15px rgba(139, 92, 246, 0.4);
-    color: white;
-}
-
-.total-card-global {
+/* ─── Total card ─────────────────────────────────────────────── */
+/*
+ * ✅ CORRECTION : Suppression du span ".total-currency" dans le HTML.
+ * Le CSS ci-dessous ne cible plus ".total-currency" pour éviter toute
+ * confusion. FinanceHelper::formatMoney() génère déjà "FCFA" dans le texte.
+ */
+.total-card {
     background: linear-gradient(
         145deg,
         var(--premium-accent),
@@ -274,8 +265,23 @@
     padding: 1.5rem;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 20px 40px -15px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 20px 40px -15px rgba(30, 58, 138, 0.4);
     color: white;
+}
+
+.total-card::after {
+    content: "";
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(
+        circle,
+        rgba(255, 255, 255, 0.2) 0%,
+        transparent 70%
+    );
+    border-radius: 50%;
 }
 
 .total-label {
@@ -284,47 +290,19 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
-    margin-bottom: 0.5rem;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 0.4rem;
 }
 
 .total-value {
     color: white;
-    font-size: clamp(1.3rem, 3.5vw, 2rem);
+    font-size: clamp(1.4rem, 4vw, 2.5rem);
     font-weight: 800;
     line-height: 1.2;
+    position: relative;
+    z-index: 1;
     word-break: break-word;
-}
-
-/* ─── Badges de portée ───────────────────────────────────────── */
-.badge-point {
-    background: rgba(139, 92, 246, 0.12);
-    color: var(--premium-purple);
-    border: 1px solid rgba(139, 92, 246, 0.2);
-    padding: 0.4rem 0.8rem;
-    border-radius: 40px;
-    font-size: 0.78rem;
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    max-width: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.badge-global {
-    background: rgba(59, 130, 246, 0.12);
-    color: var(--premium-accent);
-    border: 1px solid rgba(59, 130, 246, 0.2);
-    padding: 0.4rem 0.8rem;
-    border-radius: 40px;
-    font-size: 0.78rem;
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    white-space: nowrap;
 }
 
 /* ─── Tableau ────────────────────────────────────────────────── */
@@ -335,7 +313,6 @@
     border-radius: 28px;
     box-shadow: var(--card-shadow);
     overflow: hidden;
-    margin-top: 2rem;
 }
 
 .premium-table {
@@ -371,7 +348,7 @@
 .premium-table td {
     padding: 1.2rem 0.5rem;
     border: none;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     color: #1e293b;
     vertical-align: middle;
 }
@@ -385,38 +362,114 @@
     padding-right: 1.5rem;
 }
 
-/* ─── Montant ────────────────────────────────────────────────── */
-.montant-3dec {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--premium-danger);
+/* ─── Avatar ─────────────────────────────────────────────────── */
+.machine-avatar {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    background: linear-gradient(145deg, #f1f5f9, #e6edf7);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--premium-accent);
+    font-size: 1.3rem;
+}
+
+/* ─── Badges ─────────────────────────────────────────────────── */
+.week-badge {
+    background: #f1f5f9;
+    color: #1e293b;
+    padding: 0.5rem 1rem;
+    border-radius: 30px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border: 1px solid #e2e8f0;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
     white-space: nowrap;
 }
 
-/* ─── Actions ────────────────────────────────────────────────── */
-.action-btn {
+.week-badge i {
+    color: var(--premium-accent);
+}
+
+.amount-badge {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--premium-accent);
+    white-space: nowrap;
+}
+
+/* ─── Boutons d'action ───────────────────────────────────────── */
+/*
+ * ✅ CORRECTION : Remplacement de .btn-edit / .btn-delete par .btn-action
+ * avec variantes .btn-action-edit et .btn-action-delete.
+ * Design pill avec dégradé subtil et SVG inline dans le HTML.
+ * Le bleu utilisé est le même sky-blue que le bouton principal.
+ */
+.action-buttons {
+    display: flex;
+    gap: 0.4rem;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+
+.btn-action {
     width: 36px;
     height: 36px;
     border-radius: 12px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
-    color: #64748b;
-    background: #f8fafc;
-    border: none;
-    flex-shrink: 0;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
+    flex-shrink: 0;
+    border: none;
+    position: relative;
+    overflow: hidden;
 }
 
-.action-btn:hover {
-    background: #f1f5f9;
-    color: var(--premium-accent);
-    transform: translateY(-2px);
+/* Modifier — bleu clair sky */
+.btn-action-edit {
+    background: linear-gradient(
+        135deg,
+        rgba(56, 189, 248, 0.15) 0%,
+        rgba(125, 211, 252, 0.1) 100%
+    );
+    color: #0ea5e9;
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    box-shadow: 0 2px 8px rgba(56, 189, 248, 0.12);
 }
-.action-btn.delete:hover {
-    color: var(--premium-danger);
-    background: rgba(239, 68, 68, 0.08);
+
+.btn-action-edit:hover {
+    background: linear-gradient(135deg, #38bdf8 0%, #7dd3fc 100%);
+    color: white;
+    border-color: transparent;
+    transform: translateY(-2px) scale(1.08);
+    box-shadow: 0 8px 18px -4px rgba(56, 189, 248, 0.55);
+}
+
+/* Supprimer — rouge corail */
+.btn-action-delete {
+    background: linear-gradient(
+        135deg,
+        rgba(239, 68, 68, 0.12) 0%,
+        rgba(252, 165, 165, 0.08) 100%
+    );
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.1);
+}
+
+.btn-action-delete:hover {
+    background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+    color: white;
+    border-color: transparent;
+    transform: translateY(-2px) scale(1.08);
+    box-shadow: 0 8px 18px -4px rgba(239, 68, 68, 0.5);
 }
 
 /* ─── Modals ─────────────────────────────────────────────────── */
@@ -427,21 +480,11 @@
     box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.3);
 }
 
-.modal-header-premium-point {
-    background: linear-gradient(145deg, var(--premium-purple), #7c3aed);
-    color: white;
-    padding: 1.75rem 2rem 1.5rem;
-    border: none;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-}
-
-.modal-header-premium-global {
+.modal-header-premium {
     background: linear-gradient(
         145deg,
-        var(--premium-accent),
-        var(--premium-accent-light)
+        var(--premium-dark),
+        var(--premium-navy)
     );
     color: white;
     padding: 1.75rem 2rem 1.5rem;
@@ -511,6 +554,7 @@
     font-weight: 600;
     flex-shrink: 0;
 }
+
 .input-group-premium input {
     border: none;
     background: #f8fafc;
@@ -518,21 +562,8 @@
     flex: 1;
     min-width: 0;
 }
-.input-group-premium input:focus {
-    outline: none;
-    background: white;
-}
 
-/* Champ "montant" de style libre */
-.montant-input {
-    border: none;
-    background: #f8fafc;
-    padding: 0.8rem 1.2rem;
-    flex: 1;
-    min-width: 0;
-    font-size: 0.95rem;
-}
-.montant-input:focus {
+.input-group-premium input:focus {
     outline: none;
     background: white;
 }
@@ -558,27 +589,12 @@
     padding: 4rem 2rem;
     color: #94a3b8;
 }
+
 .empty-state i {
     font-size: 4rem;
     opacity: 0.2;
     margin-bottom: 1rem;
     display: block;
-}
-
-/* ════════════════════════════════════════════════════════════════
-   TABLETTE ≤ 992px
-   ════════════════════════════════════════════════════════════════ */
-@media (max-width: 992px) {
-    .page-header {
-        padding: 1.25rem 1.5rem;
-        border-radius: 24px;
-    }
-    .stat-value {
-        font-size: 1.5rem;
-    }
-    .total-value {
-        font-size: 1.6rem;
-    }
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -591,27 +607,20 @@
         padding: 1.2rem;
         border-radius: 20px;
     }
-
-    /* Groupe de boutons côte à côte */
     .page-header > div:last-child {
         width: 100%;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.6rem;
     }
-    .btn-premium-point,
-    .btn-premium-global {
-        flex: 1 1 auto;
+    .btn-primary-premium {
+        width: 100%;
         justify-content: center;
-        padding: 0.65rem 1rem;
-        font-size: 0.85rem;
+        padding: 0.7rem 1rem;
     }
 
     .stat-card {
         padding: 1.2rem;
     }
     .stat-value {
-        font-size: 1.35rem;
+        font-size: 1.4rem;
     }
     .stat-icon {
         font-size: 2rem;
@@ -622,12 +631,11 @@
         border-radius: 18px;
     }
 
-    .total-card-point,
-    .total-card-global {
+    .total-card {
         padding: 1.25rem;
     }
     .total-value {
-        font-size: 1.4rem;
+        font-size: 1.6rem;
     }
 
     .premium-table {
@@ -651,7 +659,13 @@
         border-radius: 0 14px 14px 0;
     }
 
-    .montant-3dec {
+    .machine-avatar {
+        width: 38px;
+        height: 38px;
+        font-size: 1.1rem;
+        border-radius: 12px;
+    }
+    .amount-badge {
         font-size: 0.95rem;
     }
 
@@ -663,8 +677,7 @@
         padding: 0.75rem 1.25rem 1.25rem;
     }
     .modal-footer-premium .btn,
-    .modal-footer-premium .btn-premium-point,
-    .modal-footer-premium .btn-premium-global {
+    .modal-footer-premium .btn-primary-premium {
         width: 100% !important;
         justify-content: center;
     }
@@ -691,43 +704,31 @@
         font-size: 0.8rem;
     }
 
-    .btn-premium-point,
-    .btn-premium-global {
-        width: 100%;
-        justify-content: center;
-        padding: 0.75rem 1rem;
-    }
-
     .stat-card {
         padding: 1rem;
         border-radius: 18px;
     }
     .stat-value {
-        font-size: 1.1rem;
-    }
-    .stat-icon {
-        font-size: 1.8rem;
+        font-size: 1.25rem;
     }
 
     .filters-card {
         border-radius: 14px;
         padding: 0.875rem;
     }
-
-    .total-card-point,
-    .total-card-global {
+    .total-card {
         padding: 1.2rem;
         border-radius: 18px;
     }
     .total-value {
-        font-size: 1.2rem;
+        font-size: 1.3rem;
     }
 
-    /* Masquer "Description" et "Date" */
+    /* Masquer "Semaine" et "Date de Saisie" sur mobile */
+    .premium-table thead th:nth-child(2),
+    .premium-table tbody td:nth-child(2),
     .premium-table thead th:nth-child(3),
-    .premium-table tbody td:nth-child(3),
-    .premium-table thead th:nth-child(4),
-    .premium-table tbody td:nth-child(4) {
+    .premium-table tbody td:nth-child(3) {
         display: none;
     }
 
@@ -750,18 +751,21 @@
         padding-right: 0.5rem;
     }
 
-    .badge-point,
-    .badge-global {
-        font-size: 0.7rem;
-        padding: 0.3rem 0.6rem;
-        gap: 3px;
+    .machine-avatar {
+        width: 34px;
+        height: 34px;
+        font-size: 1rem;
+        border-radius: 10px;
     }
-
-    .montant-3dec {
+    .week-badge {
+        font-size: 0.7rem;
+        padding: 0.35rem 0.6rem;
+    }
+    .amount-badge {
         font-size: 0.9rem;
     }
 
-    .action-btn {
+    .btn-action {
         width: 32px;
         height: 32px;
         border-radius: 10px;
@@ -773,8 +777,7 @@
     .premium-modal .modal-content {
         border-radius: 20px;
     }
-    .modal-header-premium-point,
-    .modal-header-premium-global {
+    .modal-header-premium {
         padding: 1.2rem 1rem 1rem;
     }
     .modal-body-premium {
@@ -801,19 +804,19 @@
 }
 
 /* ════════════════════════════════════════════════════════════════
-   MINI ≤ 360px
+   MINI MOBILE ≤ 360px
    ════════════════════════════════════════════════════════════════ */
 @media (max-width: 360px) {
     .page-title {
         font-size: 1.2rem;
     }
-    .stat-value {
-        font-size: 1rem;
-    }
     .total-value {
         font-size: 1.1rem;
     }
-    .montant-3dec {
+    .stat-value {
+        font-size: 1.1rem;
+    }
+    .amount-badge {
         font-size: 0.85rem;
     }
 }

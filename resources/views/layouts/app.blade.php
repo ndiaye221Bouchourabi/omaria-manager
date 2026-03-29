@@ -3,8 +3,12 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    {{-- viewport-fit=cover : gère les encoches iPhone --}}
+    <meta name="theme-color" content="#0c1a38">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="icon" type="image/jpeg" href="{{ asset('img/logo.jpeg') }}">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>O'Maria — @yield('page-title', 'Dashboard')</title>
 
     <link
@@ -15,7 +19,7 @@
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
     <link rel="stylesheet" href="{{ asset('css/points.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/collete.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/collecte.css') }}">
     <link rel="stylesheet" href="{{ asset('css/depenses.css') }}">
 
     @yield('styles')
@@ -47,13 +51,11 @@
 
         {{-- Navigation --}}
         <nav class="sidebar-nav">
-
             @auth
                 @php $role = auth()->user()->role; @endphp
 
                 <span class="nav-section-label">Principal</span>
 
-                {{-- Dashboard — admin + proprietaire uniquement --}}
                 @if(in_array($role, ['admin', 'proprietaire']))
                     <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
                         <span class="nav-icon"><i class="bi bi-droplet-fill"></i></span>
@@ -61,7 +63,6 @@
                     </a>
                 @endif
 
-                {{-- Points d'eau — admin + proprietaire + gestionnaire --}}
                 @if(in_array($role, ['admin', 'proprietaire', 'gestionnaire']))
                     <a class="nav-link {{ request()->is('points*') ? 'active' : '' }}" href="{{ route('points.index') }}">
                         <span class="nav-icon"><i class="bi bi-geo-alt"></i></span>
@@ -69,13 +70,11 @@
                     </a>
                 @endif
 
-                {{-- Collectes — tous les rôles --}}
                 <a class="nav-link {{ request()->is('collectes*') ? 'active' : '' }}" href="{{ route('collectes.index') }}">
                     <span class="nav-icon"><i class="bi bi-moisture"></i></span>
                     Collectes
                 </a>
 
-                {{-- Dépenses — admin + proprietaire + gestionnaire --}}
                 @if(in_array($role, ['admin', 'proprietaire', 'gestionnaire']))
                     <a class="nav-link {{ request()->is('depenses*') ? 'active' : '' }}" href="{{ route('depenses.index') }}">
                         <span class="nav-icon"><i class="bi bi-wallet2"></i></span>
@@ -83,7 +82,6 @@
                     </a>
                 @endif
 
-                {{-- Administration — admin + proprietaire --}}
                 @if(in_array($role, ['admin', 'proprietaire']))
                     <span class="nav-section-label">Administration</span>
 
@@ -99,12 +97,10 @@
                         Logs d'activité
                     </a>
                 @endif
-
             @endauth
-
         </nav>
 
-        {{-- Profil utilisateur + déconnexion --}}
+        {{-- Profil utilisateur --}}
         <div class="sidebar-profile">
             @auth
                 @php
@@ -132,10 +128,10 @@
                     <span class="role-badge {{ $roleClass }}">{{ $roleLabel }}</span>
                 </div>
 
-                <form method="POST" action="{{ route('logout') }}">
+                <form method="POST" action="{{ route('logout') }}" style="flex-shrink:0;">
                     @csrf
                     <button type="submit" title="Se déconnecter" style="background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.35);
-                                       font-size:17px;padding:4px;transition:color 0.2s;"
+                                               font-size:17px;padding:4px 6px;transition:color 0.2s;line-height:1;"
                         onmouseover="this.style.color='rgba(239,68,68,0.8)'"
                         onmouseout="this.style.color='rgba(255,255,255,0.35)'">
                         <i class="bi bi-box-arrow-right"></i>
@@ -152,52 +148,44 @@
 
         {{-- ============================================================
         NAVBAR — barre supérieure fixe
-        Contient : bouton sidebar | logo cliquable | infos | user | excel
         ============================================================ --}}
         <nav class="navbar navbar-expand-lg navbar-omaria sticky-top">
-            <div class="container-fluid px-md-4">
+            <div class="container-fluid px-3 px-md-4">
 
                 {{-- ---- PARTIE GAUCHE ---- --}}
-                <div class="d-flex align-items-center gap-3">
+                <div class="d-flex align-items-center gap-2 flex-nowrap overflow-hidden" style="min-width:0;flex:1;">
 
-                    {{-- Bouton hamburger pour ouvrir/fermer la sidebar --}}
+                    {{-- Hamburger --}}
                     <button class="btn-toggle-sidebar" id="toggle-sidebar" title="Menu">
                         <i class="bi bi-list"></i>
                     </button>
 
-                    {{-- ✅ MODIF 1 : Logo O'MARIA cliquable → redirige vers la page d'accueil
-                    - Admin/Propriétaire → dashboard
-                    - Gestionnaire/Collecteur → collectes (leur page principale)
-                    --}}
                     @auth
                         @php
-                            // On détermine la "home" selon le rôle de l'utilisateur connecté
                             $homeRoute = in_array(auth()->user()->role, ['admin', 'proprietaire'])
-                                ? route('dashboard')        // Admin et Propriétaire → Dashboard
-                                : route('collectes.index'); // Gestionnaire et Collecteur → Collectes
+                                ? route('dashboard')
+                                : route('collectes.index');
                         @endphp
 
-                        {{-- Lien cliquable sur le nom de l'entreprise --}}
-                        <a href="{{ $homeRoute }}" style="text-decoration:none;" title="Retour à l'accueil">
-                            <span class="navbar-brand-chip d-none d-sm-flex"
-                                style="cursor:pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.75'"
-                                onmouseout="this.style.opacity='1'">
+                        {{-- Logo O'MARIA cliquable --}}
+                        <a href="{{ $homeRoute }}" style="text-decoration:none;flex-shrink:0;" title="Retour à l'accueil">
+                            <span class="navbar-brand-chip d-none d-sm-flex" style="cursor:pointer;transition:opacity 0.2s;"
+                                onmouseover="this.style.opacity='0.75'" onmouseout="this.style.opacity='1'">
                                 O'MARIA
                             </span>
                         </a>
                     @else
-                        {{-- Si pas connecté, juste le texte sans lien --}}
                         <span class="navbar-brand-chip d-none d-sm-flex">O'MARIA</span>
                     @endauth
 
-                    {{-- Nombre de points d'eau actifs — visible à partir de md --}}
-                    <span class="navbar-chip d-none d-md-flex">
+                    {{-- Points actifs — masqué sur mobile --}}
+                    <span class="navbar-chip d-none d-md-flex" style="flex-shrink:0;">
                         <i class="bi bi-geo-alt-fill"></i>
                         {{ \App\Models\Point::count() }} Points
                     </span>
 
-                    {{-- Date du jour en français — visible à partir de lg --}}
-                    <span class="navbar-chip d-none d-lg-flex">
+                    {{-- Date du jour — masquée sur tablette --}}
+                    <span class="navbar-chip d-none d-lg-flex" style="flex-shrink:0;">
                         <i class="bi bi-calendar-check"></i>
                         {{ now()->locale('fr')->isoFormat('ddd D MMM YYYY') }}
                     </span>
@@ -206,75 +194,60 @@
                 {{-- ---- FIN PARTIE GAUCHE ---- --}}
 
                 {{-- ---- PARTIE DROITE ---- --}}
-                <div class="navbar-actions d-flex align-items-center gap-2">
+                <div class="navbar-actions d-flex align-items-center gap-2" style="flex-shrink:0;">
 
-                    {{-- Bouton Export Excel — masqué pour le Collecteur --}}
                     @auth
                         @if(in_array(auth()->user()->role, ['admin', 'proprietaire', 'gestionnaire']))
                             <button class="btn-export-excel" onclick="exportExcel()" title="Exporter en Excel">
                                 <i class="bi bi-file-earmark-excel"></i>
-                                <span>Excel</span>
+                                <span class="d-none d-sm-inline">Excel</span>
                             </button>
-                            {{-- Séparateur vertical --}}
-                            <div style="width:1px;height:26px;background:rgba(15,34,82,0.08);margin:0 4px;"></div>
+                            <div style="width:1px;height:26px;background:rgba(15,34,82,0.08);flex-shrink:0;"></div>
                         @endif
                     @endauth
 
-                    {{-- ✅ MODIF 2 : Bloc utilisateur connecté
-                    Affiche : avatar initiales | Nom complet + badge rôle
-                    Exemple : [CN] Cheikh Ndiaye · Admin
-                    --}}
+                    {{-- Utilisateur connecté --}}
                     @auth
                         @php
-                            // Labels lisibles pour chaque rôle
                             $navRoleLabels = [
                                 'admin' => 'Admin',
                                 'proprietaire' => 'Propriétaire',
                                 'gestionnaire' => 'Gestionnaire',
                                 'collecteur' => 'Collecteur',
                             ];
-
-                            // Couleurs du badge rôle dans la navbar
                             $navRoleColors = [
-                                'admin' => '#f59e0b', // Jaune/or pour admin
-                                'proprietaire' => '#8b5cf6', // Violet pour propriétaire
-                                'gestionnaire' => '#3b82f6', // Bleu pour gestionnaire
-                                'collecteur' => '#10b981', // Vert pour collecteur
+                                'admin' => '#f59e0b',
+                                'proprietaire' => '#8b5cf6',
+                                'gestionnaire' => '#3b82f6',
+                                'collecteur' => '#10b981',
                             ];
-
                             $navLabel = $navRoleLabels[auth()->user()->role] ?? 'Utilisateur';
                             $navColor = $navRoleColors[auth()->user()->role] ?? '#64748b';
                         @endphp
 
-                        <div class="d-flex align-items-center gap-2">
+                        <div class="d-flex align-items-center gap-2" style="min-width:0;">
 
-                            {{-- Avatar circulaire avec les 2 initiales du nom --}}
+                            {{-- Avatar initiales --}}
                             <div style="
-                                        width:34px; height:34px; border-radius:50%;
-                                        background: linear-gradient(135deg, #1d4088, #3b82f6);
-                                        display:flex; align-items:center; justify-content:center;
-                                        font-family:'Sora',sans-serif; font-size:11px; font-weight:700;
-                                        color:white; border:2px solid rgba(15,34,82,0.1);
-                                        flex-shrink:0;">
-                                {{-- 2 premières lettres du nom en majuscules --}}
+                                                width:34px; height:34px; min-width:34px; border-radius:50%;
+                                                background:linear-gradient(135deg, #1d4088, #3b82f6);
+                                                display:flex; align-items:center; justify-content:center;
+                                                font-family:'Sora',sans-serif; font-size:11px; font-weight:700;
+                                                color:white; border:2px solid rgba(15,34,82,0.1);
+                                                flex-shrink:0;">
                                 {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
                             </div>
 
-                            {{-- Bloc texte : nom + badge rôle — visible à partir de md --}}
-                            <div class="d-none d-md-flex flex-column" style="line-height:1.2;">
-
-                                {{-- Nom complet de l'utilisateur --}}
-                                <span style="font-size:13px; font-weight:600; color:#0f172a;">
+                            {{-- Nom + rôle — visible à partir de md --}}
+                            <div class="d-none d-md-flex flex-column" style="line-height:1.2;min-width:0;">
+                                <span
+                                    style="font-size:13px;font-weight:600;color:#0f172a;
+                                                             white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px;">
                                     {{ auth()->user()->name }}
                                 </span>
-
-                                {{-- Badge rôle coloré selon le rôle --}}
-                                <span style="
-                                            font-size:10px; font-weight:700;
-                                            font-family:'Sora', sans-serif;
-                                            color: {{ $navColor }};
-                                            letter-spacing: 0.3px;">
-                                    {{-- Icône selon le rôle --}}
+                                <span
+                                    style="font-size:10px;font-weight:700;font-family:'Sora',sans-serif;
+                                                             color:{{ $navColor }};letter-spacing:0.3px;white-space:nowrap;">
                                     @if(auth()->user()->role === 'admin')
                                         <i class="bi bi-shield-fill-check" style="font-size:9px;"></i>
                                     @elseif(auth()->user()->role === 'proprietaire')
@@ -286,7 +259,6 @@
                                     @endif
                                     {{ $navLabel }}
                                 </span>
-
                             </div>
 
                         </div>
@@ -303,12 +275,12 @@
 
         {{-- Alertes flash succès --}}
         @if(session('success'))
-            <div class="container-fluid px-md-5 pt-3">
+            <div class="container-fluid px-3 px-md-5 pt-3">
                 <div class="flash-alert success" id="flash-success">
-                    <i class="bi bi-check-circle-fill"></i>
-                    <span>{{ session('success') }}</span>
-                    <button onclick="this.parentElement.remove()"
-                        style="margin-left:auto;background:none;border:none;cursor:pointer;font-size:16px;color:inherit;opacity:0.6;">
+                    <i class="bi bi-check-circle-fill" style="flex-shrink:0;"></i>
+                    <span style="flex:1;min-width:0;">{{ session('success') }}</span>
+                    <button onclick="this.parentElement.remove()" style="margin-left:auto;background:none;border:none;cursor:pointer;font-size:16px;
+                                               color:inherit;opacity:0.6;flex-shrink:0;padding:0 2px;">
                         <i class="bi bi-x"></i>
                     </button>
                 </div>
@@ -317,20 +289,20 @@
 
         {{-- Alertes flash erreur --}}
         @if(session('error'))
-            <div class="container-fluid px-md-5 pt-3">
+            <div class="container-fluid px-3 px-md-5 pt-3">
                 <div class="flash-alert error" id="flash-error">
-                    <i class="bi bi-exclamation-triangle-fill"></i>
-                    <span>{{ session('error') }}</span>
-                    <button onclick="this.parentElement.remove()"
-                        style="margin-left:auto;background:none;border:none;cursor:pointer;font-size:16px;color:inherit;opacity:0.6;">
+                    <i class="bi bi-exclamation-triangle-fill" style="flex-shrink:0;"></i>
+                    <span style="flex:1;min-width:0;">{{ session('error') }}</span>
+                    <button onclick="this.parentElement.remove()" style="margin-left:auto;background:none;border:none;cursor:pointer;font-size:16px;
+                                               color:inherit;opacity:0.6;flex-shrink:0;padding:0 2px;">
                         <i class="bi bi-x"></i>
                     </button>
                 </div>
             </div>
         @endif
 
-        {{-- Contenu principal de chaque page --}}
-        <main class="container-fluid py-4 px-md-5">
+        {{-- Contenu principal --}}
+        <main class="container-fluid py-3 py-md-4 px-3 px-md-5">
             @yield('content')
         </main>
 
@@ -344,77 +316,92 @@
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
     <script>
-        // ================================================================
-        // SIDEBAR — ouverture / fermeture
-        // ================================================================
+        /* ================================================================
+           SIDEBAR
+        ================================================================ */
         const sidebar = document.getElementById('sidebar');
         const mainWrap = document.getElementById('main-wrapper');
         const overlay = document.getElementById('overlay');
         const toggleBtn = document.getElementById('toggle-sidebar');
         const closeBtn = document.getElementById('close-sidebar');
 
-        // Ouvre la sidebar + affiche l'overlay sombre
         function openSidebar() {
             sidebar.classList.add('active');
             overlay.classList.add('active');
-            // Sur grand écran, on pousse le contenu principal vers la droite
+            // Sur grand écran seulement, on pousse le contenu
             if (window.innerWidth > 992) mainWrap.classList.add('sidebar-open');
+            // Empêche le scroll du body quand la sidebar est ouverte sur mobile
+            document.body.style.overflow = window.innerWidth <= 992 ? 'hidden' : '';
         }
 
-        // Ferme la sidebar + retire l'overlay
         function closeSidebar() {
             sidebar.classList.remove('active');
             overlay.classList.remove('active');
             mainWrap.classList.remove('sidebar-open');
+            document.body.style.overflow = '';
         }
 
-        // Clic sur le bouton hamburger → toggle
         toggleBtn?.addEventListener('click', () =>
             sidebar.classList.contains('active') ? closeSidebar() : openSidebar()
         );
-
-        // Clic sur la croix dans la sidebar → ferme
         closeBtn?.addEventListener('click', closeSidebar);
-
-        // Clic sur l'overlay (zone grise) → ferme
         overlay?.addEventListener('click', closeSidebar);
 
-        // ================================================================
-        // ALERTES FLASH — disparaissent automatiquement après 5 secondes
-        // ================================================================
+        // Fermer la sidebar en cas de redimensionnement vers grand écran
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 992) {
+                document.body.style.overflow = '';
+            }
+        });
+
+        /* ================================================================
+           SWIPE-TO-CLOSE sur mobile (glisser vers la gauche)
+        ================================================================ */
+        (function () {
+            let startX = 0, startY = 0;
+            sidebar.addEventListener('touchstart', e => {
+                startX = e.touches[0].clientX;
+                startY = e.touches[0].clientY;
+            }, { passive: true });
+            sidebar.addEventListener('touchend', e => {
+                const dx = e.changedTouches[0].clientX - startX;
+                const dy = Math.abs(e.changedTouches[0].clientY - startY);
+                // Swipe gauche > 60px & glissement horizontal dominant
+                if (dx < -60 && dy < 40) closeSidebar();
+            }, { passive: true });
+        })();
+
+        /* ================================================================
+           ALERTES FLASH — disparaissent après 5s
+        ================================================================ */
         document.querySelectorAll('.flash-alert').forEach(el => {
             setTimeout(() => {
                 el.style.transition = 'opacity 0.4s, transform 0.4s';
                 el.style.opacity = '0';
                 el.style.transform = 'translateY(-8px)';
-                setTimeout(() => el.remove(), 400); // retire du DOM après la transition
+                setTimeout(() => el.remove(), 400);
             }, 5000);
         });
 
-        // ================================================================
-        // EXPORT EXCEL — intelligent selon la page
-        // Dashboard  → 2 feuilles (collectes/semaine + rentabilité/mois)
-        // Autres pages → tableau visible de la page
-        // ================================================================
+        /* ================================================================
+           EXPORT EXCEL
+        ================================================================ */
         function exportExcel() {
             const date = new Date().toLocaleDateString('fr-FR').replace(/\//g, '-');
             const isDash = window.location.pathname.includes('dashboard');
-
             if (isDash && window.chartData?.labels?.length > 0) {
-                exportDashboardExcel(date); // Export spécial dashboard
+                exportDashboardExcel(date);
             } else {
                 const table = document.querySelector('table');
                 if (!table) { showNotice('Aucun tableau trouvé sur cette page.', 'warning'); return; }
-                exportTableExcel(table, date); // Export tableau générique
+                exportTableExcel(table, date);
             }
         }
 
-        // Export dashboard : crée 2 feuilles Excel
         function exportDashboardExcel(date) {
             try {
                 const wb = XLSX.utils.book_new();
 
-                // Feuille 1 : collectes par semaine
                 if (window.chartData?.labels?.length > 0) {
                     const rows = [['Semaine', 'Recettes (FCFA)', 'Dépenses (FCFA)', 'Bénéfice (FCFA)']];
                     window.chartData.labels.forEach((label, i) => {
@@ -430,7 +417,6 @@
                     XLSX.utils.book_append_sheet(wb, ws1, 'Collectes semaines');
                 }
 
-                // Feuille 2 : rentabilité par mois
                 if (window.monthlyData?.labels?.length > 0) {
                     const rows2 = [['Mois', 'Recettes (FCFA)', 'Dép. points (FCFA)', 'Charges globales (FCFA)', 'Bénéfice net (FCFA)']];
                     window.monthlyData.labels.forEach((label, i) => {
@@ -451,11 +437,10 @@
                 showNotice('✅ Export réussi — 2 feuilles créées !', 'success');
             } catch (e) {
                 console.error(e);
-                showNotice('Erreur lors de l\'export.', 'error');
+                showNotice("Erreur lors de l'export.", 'error');
             }
         }
 
-        // Export générique : exporte le tableau visible de la page
         function exportTableExcel(table, date) {
             try {
                 const wb = XLSX.utils.book_new();
@@ -468,15 +453,14 @@
                 showNotice('✅ Export Excel réussi !', 'success');
             } catch (e) {
                 console.error(e);
-                showNotice('Erreur lors de l\'export.', 'error');
+                showNotice("Erreur lors de l'export.", 'error');
             }
         }
 
-        // Affiche une notification flottante en bas à droite
         function showNotice(msg, type) {
             const n = document.createElement('div');
             n.className = 'flash-alert ' + type;
-            n.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;max-width:340px;border-radius:12px;';
+            n.style.cssText = 'position:fixed;bottom:24px;right:16px;z-index:9999;max-width:340px;border-radius:12px;';
             n.innerHTML = '<span>' + msg + '</span>';
             document.body.appendChild(n);
             setTimeout(() => {

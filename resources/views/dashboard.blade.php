@@ -5,6 +5,70 @@
 @section('content')
     @php use App\Helpers\FinanceHelper; @endphp
 
+    {{-- ================================================================
+         ICÔNES SVG PREMIUM — injectées via un bloc <svg> masqué (sprite)
+         Chaque symbol est réutilisable partout dans la page via <use>
+    ================================================================ --}}
+    <svg style="display:none;" xmlns="http://www.w3.org/2000/svg">
+
+        {{-- Goutte d'eau — Points / Machines --}}
+        <symbol id="ico-drop" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2C6.5 8.5 4 12.5 4 15.5a8 8 0 0 0 16 0C20 12.5 17.5 8.5 12 2z"/>
+        </symbol>
+
+        {{-- Calendrier année — pastilles en bas --}}
+        <symbol id="ico-cal-year" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8"  y1="2" x2="8"  y2="6"/>
+            <line x1="3"  y1="10" x2="21" y2="10"/>
+            <circle cx="8"  cy="15" r="1" fill="currentColor" stroke="none"/>
+            <circle cx="12" cy="15" r="1" fill="currentColor" stroke="none"/>
+            <circle cx="16" cy="15" r="1" fill="currentColor" stroke="none"/>
+            <circle cx="8"  cy="19" r="1" fill="currentColor" stroke="none"/>
+            <circle cx="12" cy="19" r="1" fill="currentColor" stroke="none"/>
+            <circle cx="16" cy="19" r="1" fill="currentColor" stroke="none"/>
+        </symbol>
+
+        {{-- Calendrier mois — carré coloré --}}
+        <symbol id="ico-cal-month" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8"  y1="2" x2="8"  y2="6"/>
+            <line x1="3"  y1="10" x2="21" y2="10"/>
+            <rect x="7" y="14" width="4" height="4" rx="1" fill="currentColor" stroke="none"/>
+            <line x1="14" y1="15" x2="17" y2="15"/>
+            <line x1="14" y1="18" x2="16" y2="18"/>
+        </symbol>
+
+        {{-- Calendrier semaine — lignes horizontales --}}
+        <symbol id="ico-cal-week" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8"  y1="2" x2="8"  y2="6"/>
+            <line x1="3"  y1="10" x2="21" y2="10"/>
+            <line x1="7"  y1="14" x2="17" y2="14"/>
+            <line x1="7"  y1="18" x2="14" y2="18"/>
+        </symbol>
+
+        {{-- Activité / période — onde --}}
+        <symbol id="ico-activity" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+        </symbol>
+
+        {{-- Entonnoir — Filtrer --}}
+        <symbol id="ico-filter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+        </symbol>
+
+        {{-- Croix — Réinitialiser --}}
+        <symbol id="ico-reset" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6"  y1="6" x2="18" y2="18"/>
+        </symbol>
+
+    </svg>
+
     <div class="dash-wrap">
 
     {{-- ============================================================
@@ -15,70 +79,101 @@
             <div class="row g-2 align-items-end">
 
                 <div class="col-lg-2 col-md-4 col-6">
-                    <div class="filter-label"><i class="bi bi-geo-alt-fill"></i> Point</div>
-                    <select name="point_id" class="premium-select" onchange="this.form.submit()">
-                        <option value="">💧 Toutes les Machines</option>
-                        @foreach($allPoints as $p)
-                            <option value="{{ $p->id }}" {{ $pointId == $p->id ? 'selected' : '' }}>
-                                💧 {{ $p->nom_machine }}
-                            </option>
-                        @endforeach
-                    </select>
+                    <div class="filter-label">
+                        <svg width="13" height="13" style="vertical-align:-2px;opacity:.7;"><use href="#ico-drop"/></svg>
+                        Point
+                    </div>
+                    <div class="premium-select-wrap">
+                        <svg width="14" height="14" class="pselect-icon"><use href="#ico-drop"/></svg>
+                        <select name="point_id" class="premium-select" onchange="this.form.submit()">
+                            <option value="">Toutes les machines</option>
+                            @foreach($allPoints as $p)
+                                <option value="{{ $p->id }}" {{ $pointId == $p->id ? 'selected' : '' }}>
+                                    {{ $p->nom_machine }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
 
                 <div class="col-lg-2 col-md-4 col-6">
-                    <div class="filter-label"><i class="bi bi-calendar-year"></i> Année</div>
-                    <select name="year" class="premium-select" onchange="this.form.submit()">
-                        @foreach($availableYears as $yr)
-                            <option value="{{ $yr }}" {{ $selectedYear == $yr ? 'selected' : '' }}>📆 {{ $yr }}</option>
-                        @endforeach
-                    </select>
+                    <div class="filter-label">
+                        <svg width="13" height="13" style="vertical-align:-2px;opacity:.7;"><use href="#ico-cal-year"/></svg>
+                        Année
+                    </div>
+                    <div class="premium-select-wrap">
+                        <svg width="14" height="14" class="pselect-icon"><use href="#ico-cal-year"/></svg>
+                        <select name="year" class="premium-select" onchange="this.form.submit()">
+                            @foreach($availableYears as $yr)
+                                <option value="{{ $yr }}" {{ $selectedYear == $yr ? 'selected' : '' }}>{{ $yr }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
 
                 <div class="col-lg-2 col-md-4 col-6">
-                    <div class="filter-label"><i class="bi bi-calendar-month"></i> Mois</div>
-                    <select name="month" class="premium-select" onchange="this.form.submit()">
-                        <option value="">📅 Tous les mois</option>
-                        @foreach($availableMonths as $num => $nom)
-                            <option value="{{ $num }}" {{ $selectedMonth == $num ? 'selected' : '' }}>
-                                {{ $monthIcons[$num] ?? '📅' }} {{ $nom }}
-                            </option>
-                        @endforeach
-                    </select>
+                    <div class="filter-label">
+                        <svg width="13" height="13" style="vertical-align:-2px;opacity:.7;"><use href="#ico-cal-month"/></svg>
+                        Mois
+                    </div>
+                    <div class="premium-select-wrap">
+                        <svg width="14" height="14" class="pselect-icon"><use href="#ico-cal-month"/></svg>
+                        <select name="month" class="premium-select" onchange="this.form.submit()">
+                            <option value="">Tous les mois</option>
+                            @foreach($availableMonths as $num => $nom)
+                                <option value="{{ $num }}" {{ $selectedMonth == $num ? 'selected' : '' }}>
+                                    {{ $nom }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
 
                 <div class="col-lg-2 col-md-4 col-6">
-                    <div class="filter-label"><i class="bi bi-calendar-week"></i> Semaine</div>
-                    <select name="week" class="premium-select" onchange="this.form.submit()">
-                        <option value="">📊 Toutes</option>
-                        @forelse($availableWeeks as $sem)
-                            <option value="{{ $sem->week_number }}"
-                                {{ $selectedWeek == $sem->week_number ? 'selected' : '' }}>
-                                🔵 {{ $sem->semaine_label }}
-                            </option>
-                        @empty
-                            <option disabled>Aucune semaine</option>
-                        @endforelse
-                    </select>
+                    <div class="filter-label">
+                        <svg width="13" height="13" style="vertical-align:-2px;opacity:.7;"><use href="#ico-cal-week"/></svg>
+                        Semaine
+                    </div>
+                    <div class="premium-select-wrap">
+                        <svg width="14" height="14" class="pselect-icon"><use href="#ico-cal-week"/></svg>
+                        <select name="week" class="premium-select" onchange="this.form.submit()">
+                            <option value="">Toutes</option>
+                            @forelse($availableWeeks as $sem)
+                                <option value="{{ $sem->week_number }}"
+                                    {{ $selectedWeek == $sem->week_number ? 'selected' : '' }}>
+                                    {{ $sem->semaine_label }}
+                                </option>
+                            @empty
+                                <option disabled>Aucune semaine</option>
+                            @endforelse
+                        </select>
+                    </div>
                 </div>
 
                 <div class="col-lg-2 col-md-4 col-6">
-                    <div class="filter-label"><i class="bi bi-lightning-charge-fill"></i> Période</div>
-                    <select name="periode" class="premium-select" onchange="this.form.submit()">
-                        <option value="semaine" {{ $periode == 'semaine' ? 'selected' : '' }}>⚡ Semaine</option>
-                        <option value="mois"    {{ $periode == 'mois' ? 'selected' : '' }}>📆 Mois actuel</option>
-                        <option value="annee"   {{ $periode == 'annee' ? 'selected' : '' }}>📈 Année</option>
-                    </select>
+                    <div class="filter-label">
+                        <svg width="13" height="13" style="vertical-align:-2px;opacity:.7;"><use href="#ico-activity"/></svg>
+                        Période
+                    </div>
+                    <div class="premium-select-wrap">
+                        <svg width="14" height="14" class="pselect-icon"><use href="#ico-activity"/></svg>
+                        <select name="periode" class="premium-select" onchange="this.form.submit()">
+                            <option value="semaine" {{ $periode == 'semaine' ? 'selected' : '' }}>Semaine</option>
+                            <option value="mois"    {{ $periode == 'mois'    ? 'selected' : '' }}>Mois actuel</option>
+                            <option value="annee"   {{ $periode == 'annee'   ? 'selected' : '' }}>Année</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="col-lg-2 col-md-4">
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn-apply">
-                            <i class="bi bi-funnel-fill"></i> Filtrer
+                            <svg width="13" height="13" style="vertical-align:-2px;"><use href="#ico-filter"/></svg>
+                            Filtrer
                         </button>
                         @if(request()->anyFilled(['point_id', 'month', 'week']) || request('periode', 'mois') != 'mois')
                             <a href="{{ route('dashboard') }}" class="btn-reset" title="Réinitialiser">
-                                <i class="bi bi-x-lg"></i>
+                                <svg width="12" height="12"><use href="#ico-reset"/></svg>
                             </a>
                         @endif
                     </div>
@@ -93,21 +188,24 @@
                 <div class="d-flex flex-wrap gap-2 mt-2">
                     @if($pointId)
                         @php $nomF = $allPoints->firstWhere('id', $pointId)?->nom_machine ?? ''; @endphp
-                        <span class="filter-context-badge"><i class="bi bi-geo-alt-fill"></i> {{ $nomF }}</span>
+                        <span class="filter-context-badge">
+                            <svg width="11" height="11" style="vertical-align:-1px;"><use href="#ico-drop"/></svg>
+                            {{ $nomF }}
+                        </span>
                     @endif
                     @if(is_int($selectedMonth) && $selectedMonth > 0)
-                        @php
-                            $mIcon = $monthIcons[$selectedMonth] ?? '';
-                            $mNom = $availableMonths[$selectedMonth] ?? '';
-                        @endphp
+                        @php $mNom = $availableMonths[$selectedMonth] ?? ''; @endphp
                         <span class="filter-context-badge">
-                            <i class="bi bi-calendar-month"></i>
-                            {{ $mIcon }} {{ $mNom }} {{ $selectedYear }}
+                            <svg width="11" height="11" style="vertical-align:-1px;"><use href="#ico-cal-month"/></svg>
+                            {{ $mNom }} {{ $selectedYear }}
                         </span>
                     @endif
                     @if($selectedWeek)
                         @php $swLabel = $availableWeeks->firstWhere('week_number', $selectedWeek)?->semaine_label ?? 'Sem ' . $selectedWeek; @endphp
-                        <span class="filter-context-badge"><i class="bi bi-calendar-week"></i> {{ $swLabel }}</span>
+                        <span class="filter-context-badge">
+                            <svg width="11" height="11" style="vertical-align:-1px;"><use href="#ico-cal-week"/></svg>
+                            {{ $swLabel }}
+                        </span>
                     @endif
                 </div>
             @endif
@@ -189,15 +287,11 @@
 
     {{-- ============================================================
          ZONE PRINCIPALE — 2 colonnes
-         Gauche : G1 (flux semaines) + G3 (rentabilité par point)
-         Droite : Top 5 + Alertes
          ============================================================ --}}
     <div class="main-grid">
 
-        {{-- ---- COLONNE GAUCHE : Graphiques ---- --}}
         <div class="charts-left">
 
-            {{-- G1 : Courbe collectes brutes par semaine --}}
             <div class="chart-card">
                 <div class="chart-header">
                     <div>
@@ -224,10 +318,6 @@
                         <div class="chart-legend-dot" style="background:#378ADD; border-radius:50%;"></div>
                         Recettes par semaine
                     </div>
-                    <div class="chart-legend-item">
-                        <div style="width:18px; height:2px; background:rgba(186,117,23,0.5); border-top: 1.5px dashed rgba(186,117,23,0.6);"></div>
-                        Moyenne
-                    </div>
                 </div>
                 <div class="chart-container-g1">
                     @if(count($chartData['labels'] ?? []) > 0)
@@ -241,7 +331,6 @@
                 </div>
             </div>
 
-            {{-- G2 : Barres groupées par mois (recettes vs dépenses) --}}
             <div class="chart-card">
                 <div class="chart-header">
                     <div>
@@ -276,12 +365,10 @@
                 </div>
             </div>
 
-        </div>{{-- /.charts-left --}}
+        </div>
 
-        {{-- ---- COLONNE DROITE : Top 5 + Alertes ---- --}}
         <div class="right-col">
 
-            {{-- TOP 5 --}}
             <div class="top5-card">
                 <div class="top5-header">
                     <h6><i class="bi bi-award-fill"></i> Top 5 Rentables</h6>
@@ -319,7 +406,6 @@
                 @endif
             </div>
 
-            {{-- ALERTES --}}
             <div class="alerts-card">
                 <div class="alerts-head">
                     <i class="bi bi-bell-fill" style="color:#ef4444;"></i>
@@ -363,17 +449,69 @@
                 @endif
             </div>
 
-        </div>{{-- /.right-col --}}
+        </div>
 
-    </div>{{-- /.main-grid --}}
+    </div>
 
-    </div>{{-- /.dash-wrap --}}
+    </div>
+
+    {{-- ============================================================
+         CSS ADDITIONNEL — uniquement pour le wrapper d'icône dans select
+         ============================================================ --}}
+    <style>
+        .premium-select-wrap {
+            position: relative;
+        }
+
+        .premium-select-wrap .pselect-icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            z-index: 1;
+            color: #94a3b8;
+            stroke: #94a3b8;
+            fill: none;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* Décaler le texte du select pour laisser la place à l'icône */
+        .premium-select-wrap .premium-select {
+            padding-left: 30px;
+        }
+
+        /* Icône dans le label de filtre */
+        .filter-label svg use {
+            stroke: currentColor;
+        }
+
+        /* Icône dans les tags de filtres actifs */
+        .filter-context-badge svg {
+            stroke: #3b82f6;
+            fill: none;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* Icônes dans btn-apply et btn-reset */
+        .btn-apply svg,
+        .btn-reset svg {
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+    </style>
+
 @endsection
 
 @section('scripts')
     <script>
-        /* G1 — Courbe collectes par semaine
-           Filtre : point_id + year + month + week (via FinanceService fallback) */
         window.chartData = {
             labels:    {!! json_encode($chartData['labels'] ?? []) !!},
             collectes: {!! json_encode($chartData['collectes'] ?? []) !!},
@@ -381,8 +519,6 @@
             benefices: {!! json_encode($chartData['benefices'] ?? []) !!}
         };
 
-        /* G2 — Barres groupées par mois
-           Filtre : point_id + year (showS tous les mois de l'année) */
         window.monthlyData = {
             labels:           {!! json_encode($monthlyData['labels'] ?? []) !!},
             collectes:        {!! json_encode($monthlyData['collectes'] ?? []) !!},
@@ -391,7 +527,6 @@
             benefices:        {!! json_encode($monthlyData['benefices'] ?? []) !!}
         };
 
-        /* Compatibilité (non utilisés dans cette vue) */
         window.modePointUnique = false;
         window.chartTendance   = { labels: [], collectes: [], depenses: [], benefices: [] };
     </script>

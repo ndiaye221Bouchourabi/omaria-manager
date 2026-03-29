@@ -11,7 +11,7 @@
             gap: 1.25rem;
         }
 
-        /* Header */
+        /* ─── Header ───────────────────────────────────────────────── */
         .logs-header {
             display: flex;
             align-items: center;
@@ -40,7 +40,8 @@
 
         .logs-header-title {
             font-family: 'Sora', sans-serif;
-            font-size: 1.1rem;
+            /* 🔧 FIX: taille fluide */
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
             font-weight: 800;
             color: #0f172a;
             display: flex;
@@ -58,7 +59,7 @@
             margin-top: 3px;
         }
 
-        /* Filtres */
+        /* ─── Filtres ──────────────────────────────────────────────── */
         .logs-filters {
             background: rgba(255, 255, 255, 0.88);
             backdrop-filter: blur(14px);
@@ -76,7 +77,9 @@
             display: flex;
             flex-direction: column;
             gap: 5px;
-            min-width: 160px;
+            /* 🔧 FIX: min-width réduit pour tenir sur mobile */
+            min-width: 130px;
+            flex: 1 1 130px;
         }
 
         .filter-group label {
@@ -99,6 +102,10 @@
             outline: none;
             transition: border 0.15s;
             font-family: 'DM Sans', sans-serif;
+            width: 100%;
+            /* 🔧 FIX: évite le débordement dans flex */
+            min-width: 0;
+            box-sizing: border-box;
         }
 
         .filter-group select:focus,
@@ -121,6 +128,7 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            white-space: nowrap;
         }
 
         .btn-filter:hover {
@@ -142,6 +150,7 @@
             gap: 6px;
             text-decoration: none;
             font-family: 'DM Sans', sans-serif;
+            white-space: nowrap;
         }
 
         .btn-reset:hover {
@@ -150,7 +159,7 @@
             border-color: #fca5a5;
         }
 
-        /* Stats rapides */
+        /* ─── Stats rapides ────────────────────────────────────────── */
         .logs-stats {
             display: flex;
             gap: 1rem;
@@ -171,7 +180,8 @@
         }
 
         .log-stat-chip strong {
-            font-size: 16px;
+            /* 🔧 FIX: taille fluide */
+            font-size: clamp(13px, 2vw, 16px);
             color: #0f172a;
         }
 
@@ -179,7 +189,7 @@
             color: #64748b;
         }
 
-        /* Table */
+        /* ─── Table ────────────────────────────────────────────────── */
         .logs-table-wrap {
             background: rgba(255, 255, 255, 0.88);
             backdrop-filter: blur(14px);
@@ -192,6 +202,8 @@
         .logs-table {
             width: 100%;
             border-collapse: collapse;
+            /* 🔧 FIX: force les colonnes à respecter les largeurs définies */
+            table-layout: fixed;
         }
 
         .logs-table thead tr {
@@ -209,6 +221,20 @@
             color: #94a3b8;
             text-align: left;
             white-space: nowrap;
+        }
+
+        /* 🔧 FIX: contraindre la colonne Détail pour éviter l'explosion verticale */
+        .logs-table th:nth-child(4),
+        .logs-table td:nth-child(4) {
+            max-width: 220px;
+            width: 220px;
+        }
+
+        /* 🔧 FIX: contraindre la colonne IP */
+        .logs-table th:nth-child(5),
+        .logs-table td:nth-child(5) {
+            max-width: 110px;
+            width: 110px;
         }
 
         .logs-table tbody tr {
@@ -229,7 +255,7 @@
             vertical-align: middle;
         }
 
-        /* Badge module */
+        /* ─── Badge module ─────────────────────────────────────────── */
         .module-badge {
             display: inline-flex;
             align-items: center;
@@ -240,6 +266,7 @@
             font-size: 11px;
             font-weight: 700;
             border: 1px solid transparent;
+            white-space: nowrap;
         }
 
         .module-badge.collectes {
@@ -266,7 +293,7 @@
             border-color: rgba(245, 158, 11, 0.2);
         }
 
-        /* Badge action */
+        /* ─── Badge action ─────────────────────────────────────────── */
         .action-badge {
             display: inline-flex;
             align-items: center;
@@ -274,6 +301,7 @@
             font-size: 12.5px;
             font-weight: 600;
             color: #0f172a;
+            white-space: nowrap;
         }
 
         .action-badge i {
@@ -304,7 +332,7 @@
             color: #065f46;
         }
 
-        /* Avatar utilisateur */
+        /* ─── Avatar utilisateur ───────────────────────────────────── */
         .user-cell {
             display: flex;
             align-items: center;
@@ -323,6 +351,7 @@
             font-size: 11px;
             font-weight: 700;
             color: white;
+            /* 🔧 FIX: déjà flex-shrink:0, on le garde */
             flex-shrink: 0;
             text-transform: uppercase;
         }
@@ -339,7 +368,7 @@
             margin-top: 1px;
         }
 
-        /* Détail */
+        /* ─── Détail ───────────────────────────────────────────────── */
         .log-detail {
             font-size: 12px;
             color: #64748b;
@@ -348,11 +377,92 @@
             border: 1px solid rgba(99, 102, 241, 0.1);
             border-radius: 6px;
             padding: 4px 8px;
-            max-width: 380px;
+            /* 🔧 FIX: empêche l'explosion verticale lettre par lettre */
+            max-width: min(320px, 100%);
+            min-width: 0;
             word-break: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
+            display: block;
         }
 
-        /* Heure */
+        /* ─── Pagination Laravel ───────────────────────────────────── */
+        /* Neutralise les grandes flèches SVG de Tailwind pagination */
+        .pagination-wrap nav {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .pagination-wrap nav svg {
+            /* 🔧 FIX: les icônes SVG de la pagination Laravel étaient énormes */
+            width: 14px !important;
+            height: 14px !important;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .pagination-wrap span[aria-disabled="true"],
+        .pagination-wrap a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 32px;
+            height: 32px;
+            padding: 0 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: 'Sora', sans-serif;
+            border: 1px solid #e2e8f0;
+            background: white;
+            color: #374151;
+            text-decoration: none;
+            transition: all 0.15s;
+        }
+
+        .pagination-wrap a:hover {
+            background: #6366f1;
+            color: white;
+            border-color: #6366f1;
+        }
+
+        /* Page active */
+        .pagination-wrap span[aria-current="page"]>span {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 32px;
+            height: 32px;
+            padding: 0 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: 'Sora', sans-serif;
+            background: #6366f1;
+            color: white;
+            border: 1px solid #6366f1;
+        }
+
+        /* Bouton désactivé (Précédent sur page 1) */
+        .pagination-wrap span[aria-disabled="true"] {
+            opacity: 0.4;
+            cursor: default;
+            pointer-events: none;
+        }
+
+        /* Conteneur ul/div interne de la pagination */
+        .pagination-wrap nav>div:first-child {
+            display: none;
+        }
+
+        /* cache le "Showing X to Y" qu'on gère ailleurs */
+        .pagination-wrap .flex {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* ─── Heure ────────────────────────────────────────────────── */
         .log-time {
             font-size: 12px;
             color: #64748b;
@@ -366,15 +476,18 @@
             margin-top: 2px;
         }
 
-        /* Pagination */
+        /* ─── Pagination ───────────────────────────────────────────── */
         .pagination-wrap {
             display: flex;
             justify-content: center;
             padding: 16px;
             border-top: 1px solid rgba(226, 232, 240, 0.5);
+            /* 🔧 FIX: wrap si la pagination est longue */
+            flex-wrap: wrap;
+            gap: 4px;
         }
 
-        /* Empty */
+        /* ─── Empty ────────────────────────────────────────────────── */
         .empty-logs {
             text-align: center;
             padding: 3rem;
@@ -387,6 +500,231 @@
             display: block;
             margin-bottom: 8px;
             opacity: 0.3;
+        }
+
+        /* ════════════════════════════════════════════════════════════
+               MEDIA QUERIES RESPONSIVE
+               ════════════════════════════════════════════════════════════ */
+
+        /* ─── Tablette (≤ 768px) ─────────────────────────────────── */
+        @media (max-width: 768px) {
+
+            .logs-header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 1rem 1.1rem;
+                border-radius: 18px;
+            }
+
+            .logs-stats {
+                width: 100%;
+                gap: 0.6rem;
+            }
+
+            .log-stat-chip {
+                flex: 1 1 auto;
+                justify-content: center;
+                padding: 7px 10px;
+            }
+
+            .logs-filters {
+                padding: 0.875rem 1rem;
+                gap: 10px;
+            }
+
+            .filter-group {
+                flex: 1 1 calc(50% - 10px);
+                min-width: 0;
+            }
+
+            .btn-filter,
+            .btn-reset {
+                flex: 1 1 calc(50% - 10px);
+                justify-content: center;
+            }
+
+            .logs-table th,
+            .logs-table td {
+                padding: 10px 10px;
+            }
+
+            .logs-table th {
+                font-size: 9.5px;
+            }
+
+            .logs-table td {
+                font-size: 12px;
+            }
+
+            .log-detail {
+                max-width: 160px;
+            }
+        }
+
+        /* ─── Mobile (≤ 600px) — affichage CARTE au lieu du tableau ─ */
+        @media (max-width: 600px) {
+
+            .logs-wrap {
+                gap: 0.875rem;
+            }
+
+            .logs-header {
+                padding: 0.875rem 1rem;
+                border-radius: 14px;
+            }
+
+            .logs-header-sub {
+                font-size: 11px;
+            }
+
+            /* Stats : scroll horizontal */
+            .logs-stats {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                padding-bottom: 4px;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .log-stat-chip {
+                flex-shrink: 0;
+                white-space: nowrap;
+            }
+
+            /* Filtres : 1 par ligne */
+            .logs-filters {
+                padding: 0.75rem;
+                gap: 8px;
+            }
+
+            .filter-group {
+                flex: 1 1 100%;
+            }
+
+            .btn-filter,
+            .btn-reset {
+                flex: 1 1 100%;
+                justify-content: center;
+            }
+
+            /* ── Transformation tableau → cartes ─────────────────── */
+            .logs-table-wrap {
+                border-radius: 14px;
+                background: transparent;
+                border: none;
+                box-shadow: none;
+                overflow: visible;
+            }
+
+            /* Cacher le thead */
+            .logs-table thead {
+                display: none;
+            }
+
+            /* Chaque ligne devient une carte */
+            .logs-table,
+            .logs-table tbody {
+                display: block;
+                width: 100%;
+            }
+
+            .logs-table tbody tr {
+                display: block;
+                background: rgba(255, 255, 255, 0.92);
+                border: 1px solid rgba(226, 232, 240, 0.8);
+                border-radius: 16px;
+                margin-bottom: 10px;
+                padding: 14px 14px 10px;
+                box-shadow: 0 2px 10px rgba(11, 20, 35, 0.05);
+                position: relative;
+            }
+
+            .logs-table tbody tr:last-child {
+                border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+            }
+
+            /* Chaque cellule devient une ligne dans la carte */
+            .logs-table td {
+                display: flex;
+                align-items: flex-start;
+                gap: 8px;
+                padding: 5px 0;
+                border: none;
+                font-size: 12.5px;
+                width: 100%;
+            }
+
+            /* Étiquette avant chaque valeur via data-label */
+            .logs-table td::before {
+                content: attr(data-label);
+                font-size: 9px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                color: #94a3b8;
+                min-width: 68px;
+                padding-top: 2px;
+                flex-shrink: 0;
+            }
+
+            /* Masquer cellules IP et Détail vides */
+            .logs-table td:empty {
+                display: none;
+            }
+
+            /* Ligne utilisateur : plus grande */
+            .logs-table td:first-child {
+                padding-bottom: 8px;
+                border-bottom: 1px solid #f1f5f9;
+                margin-bottom: 4px;
+            }
+
+            /* Detail : wrap normal, pas d'explosion */
+            .log-detail {
+                max-width: 100%;
+                width: 100%;
+                white-space: normal;
+                word-break: break-word;
+                overflow-wrap: anywhere;
+            }
+
+            /* User cell dans carte */
+            .user-avatar-sm {
+                width: 28px;
+                height: 28px;
+                font-size: 10px;
+            }
+
+            .user-name-sm {
+                font-size: 12px;
+            }
+
+            .user-role-sm {
+                font-size: 10px;
+            }
+
+            .action-badge {
+                font-size: 12px;
+            }
+
+            .log-time {
+                font-size: 11px;
+            }
+
+            .log-time-date {
+                font-size: 10px;
+            }
+
+            /* Pagination */
+            .pagination-wrap {
+                padding: 12px 8px;
+            }
+
+            /* Info bas de page */
+            .logs-wrap>div:last-child {
+                border-radius: 10px;
+                padding: 10px 12px;
+                font-size: 11.5px;
+            }
         }
     </style>
 
@@ -483,7 +821,7 @@
                         <tr>
 
                             {{-- Utilisateur --}}
-                            <td>
+                            <td data-label="Utilisateur">
                                 <div class="user-cell">
                                     <div class="user-avatar-sm">
                                         {{ strtoupper(substr($log->user->name ?? '?', 0, 2)) }}
@@ -496,7 +834,7 @@
                             </td>
 
                             {{-- Action --}}
-                            <td>
+                            <td data-label="Action">
                                 @php
                                     $actionClass = match (true) {
                                         str_contains($log->action, 'Modification') => 'modif',
@@ -524,7 +862,7 @@
                             </td>
 
                             {{-- Module --}}
-                            <td>
+                            <td data-label="Module">
                                 <span class="module-badge {{ $log->module }}">
                                     @if($log->module === 'collectes') <i class="bi bi-moisture" style="font-size:10px;"></i>
                                     @elseif($log->module === 'depenses') <i class="bi bi-wallet2" style="font-size:10px;"></i>
@@ -537,7 +875,7 @@
                             </td>
 
                             {{-- Détail --}}
-                            <td>
+                            <td data-label="Détail">
                                 @if($log->detail)
                                     <div class="log-detail">{{ $log->detail }}</div>
                                 @else
@@ -546,12 +884,12 @@
                             </td>
 
                             {{-- IP --}}
-                            <td style="font-size:12px; color:#94a3b8; font-family:'DM Mono',monospace;">
+                            <td data-label="IP" style="font-size:12px; color:#94a3b8; font-family:'DM Mono',monospace;">
                                 {{ $log->ip ?? '—' }}
                             </td>
 
                             {{-- Heure --}}
-                            <td>
+                            <td data-label="Heure">
                                 <div class="log-time">
                                     {{ $log->created_at->format('H:i:s') }}
                                 </div>
@@ -585,7 +923,7 @@
 
         {{-- Info --}}
         <div
-            style="background:rgba(99,102,241,0.05); border:1px solid rgba(99,102,241,0.15); border-radius:14px; padding:12px 16px; font-size:12.5px; color:#4338ca; display:flex; align-items:center; gap:8px;">
+            style="background:rgba(99,102,241,0.05); border:1px solid rgba(99,102,241,0.15); border-radius:14px; padding:12px 16px; font-size:12.5px; color:#4338ca; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
             <i class="bi bi-info-circle-fill" style="color:#6366f1; flex-shrink:0;"></i>
             <div>
                 Les logs sont <strong>en lecture seule</strong> — aucune modification possible.

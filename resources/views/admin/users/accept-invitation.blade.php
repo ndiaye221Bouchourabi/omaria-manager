@@ -29,7 +29,7 @@
             overflow: hidden;
         }
 
-        /* Vagues animées (thème eau - cohérent avec la sidebar) */
+        /* Vagues animées */
         .waves-bg {
             position: fixed;
             inset: 0;
@@ -85,27 +85,67 @@
             margin: 20px;
         }
 
-        /* Branding top */
+        /* ════════════════════════════════════
+           ✅ LOGO O'MARIA — même style login
+           ════════════════════════════════════ */
         .brand {
             text-align: center;
             margin-bottom: 24px;
         }
 
-        .brand-logo {
-            width: 56px;
-            height: 56px;
-            border-radius: 16px;
-            background: linear-gradient(135deg, #0f2252, #3b82f6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 12px;
-            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.35);
+        .brand-logo-wrap {
+            margin: 0 auto 14px;
+            width: 180px;
+            height: 80px;
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15), 0 8px 28px rgba(13, 40, 88, 0.35);
         }
 
-        .brand-logo i {
-            color: white;
-            font-size: 24px;
+        /* Bordure animée */
+        .brand-logo-wrap::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 22px;
+            background: conic-gradient(from 0deg,
+                    #3b82f6 0%,
+                    #06b6d4 30%,
+                    #fbbf24 60%,
+                    #3b82f6 100%);
+            animation: spin-ring 4s linear infinite;
+            z-index: 0;
+        }
+
+        .brand-logo-wrap::after {
+            content: '';
+            position: absolute;
+            inset: 2px;
+            border-radius: 18px;
+            background: white;
+            z-index: 1;
+        }
+
+        @keyframes spin-ring {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .brand-logo-img {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: center;
+            padding: 8px 12px;
         }
 
         .brand-name {
@@ -258,7 +298,6 @@
             box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
         }
 
-        /* Toggle mot de passe visible */
         .toggle-pwd {
             position: absolute;
             right: 13px;
@@ -277,7 +316,7 @@
             color: rgba(255, 255, 255, 0.7);
         }
 
-        /* Indicateur force mot de passe */
+        /* Barre de force */
         .strength-bar {
             display: flex;
             gap: 4px;
@@ -404,10 +443,10 @@
 
     <div class="card-wrap">
 
-        <!-- Branding -->
+        <!-- ✅ Branding avec logo O'Maria (même style que login) -->
         <div class="brand">
-            <div class="brand-logo">
-                <i class="bi bi-droplet-fill"></i>
+            <div class="brand-logo-wrap">
+                <img src="{{ asset('img/logo.jpeg') }}" alt="O'Maria" class="brand-logo-img">
             </div>
             <div class="brand-name">O'Maria</div>
             <div class="brand-sub">Gestion des fontaines d'eau</div>
@@ -462,7 +501,6 @@
                         </button>
                     </div>
 
-                    <!-- Barre de force -->
                     <div class="strength-bar">
                         <span id="bar-1"></span>
                         <span id="bar-2"></span>
@@ -520,7 +558,6 @@
     </div>
 
     <script>
-        // Toggle visibilité mot de passe
         function toggleVisibility(fieldId, btn) {
             const input = document.getElementById(fieldId);
             const icon = btn.querySelector('i');
@@ -533,7 +570,6 @@
             }
         }
 
-        // Vérification des règles en temps réel
         function checkStrength(val) {
             const rules = {
                 'rule-length': val.length >= 8,
@@ -555,7 +591,6 @@
                 }
             });
 
-            // Barre de force
             const colors = ['', '#ef4444', '#f59e0b', '#3b82f6', '#10b981'];
             const labels = ['', 'Faible', 'Moyen', 'Fort', 'Très fort'];
             const barFill = val.length === 0 ? 0 : Math.min(score + (val.length >= 12 ? 1 : 0), 4);

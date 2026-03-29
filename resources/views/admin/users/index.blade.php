@@ -5,15 +5,21 @@
 @section('content')
 
     <style>
+        /* ═══════════════════════════════════════════
+               BASE
+            ═══════════════════════════════════════════ */
         .users-wrap {
             display: flex;
             flex-direction: column;
             gap: 1.25rem;
         }
 
+        /* ═══════════════════════════════════════════
+               HEADER
+            ═══════════════════════════════════════════ */
         .users-header {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: space-between;
             gap: 1rem;
             flex-wrap: wrap;
@@ -57,6 +63,33 @@
             margin-top: 3px;
         }
 
+        .role-stats {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .role-stat-chip {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 5px 12px;
+            background: white;
+            border: 1px solid rgba(15, 34, 82, 0.08);
+            border-radius: 99px;
+            font-family: 'Sora', sans-serif;
+            font-size: 11.5px;
+            font-weight: 600;
+        }
+
+        .role-stat-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
         .btn-add-user {
             display: inline-flex;
             align-items: center;
@@ -73,52 +106,249 @@
             text-decoration: none;
             box-shadow: 0 4px 14px rgba(13, 40, 88, 0.3);
             transition: all 0.2s;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .btn-add-user:hover {
             background: linear-gradient(135deg, #163068, #2554b0);
             transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(13, 40, 88, 0.4);
             color: white;
         }
 
-        .role-stats {
+        /* ═══════════════════════════════════════════
+               ALERTES / MESSAGES SESSION
+            ═══════════════════════════════════════════ */
+        .alert-box {
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 13px;
             display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
+            align-items: flex-start;
+            gap: 8px;
         }
 
-        .role-stat-chip {
+        .alert-box i {
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .link-box {
+            border-radius: 14px;
+            padding: 16px 20px;
+        }
+
+        .link-box-title {
+            font-family: 'Sora', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
-            gap: 7px;
-            padding: 6px 14px;
+            gap: 6px;
+        }
+
+        .link-box-input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 12.5px;
+            color: #334155;
             background: white;
-            border: 1px solid rgba(15, 34, 82, 0.08);
+            cursor: pointer;
+        }
+
+        .btn-copy {
+            margin-top: 10px;
+            padding: 9px 18px;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Sora', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        /* ═══════════════════════════════════════════
+               BADGES COMMUNS
+            ═══════════════════════════════════════════ */
+        .role-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
             border-radius: 99px;
             font-family: 'Sora', sans-serif;
-            font-size: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            border: 1px solid transparent;
+        }
+
+        .role-badge.admin {
+            background: rgba(245, 158, 11, .1);
+            color: #92400e;
+            border-color: rgba(245, 158, 11, .25);
+        }
+
+        .role-badge.proprietaire {
+            background: rgba(139, 92, 246, .1);
+            color: #4c1d95;
+            border-color: rgba(139, 92, 246, .25);
+        }
+
+        .role-badge.gestionnaire {
+            background: rgba(59, 130, 246, .1);
+            color: #1e40af;
+            border-color: rgba(59, 130, 246, .25);
+        }
+
+        .role-badge.collecteur {
+            background: rgba(16, 185, 129, .1);
+            color: #065f46;
+            border-color: rgba(16, 185, 129, .25);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            border-radius: 99px;
+            font-family: 'Sora', sans-serif;
+            font-size: 11px;
             font-weight: 600;
         }
 
-        .role-stat-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
+        .status-badge.active {
+            background: rgba(16, 185, 129, .08);
+            color: #065f46;
         }
 
+        .status-badge.inactive {
+            background: rgba(239, 68, 68, .08);
+            color: #7f1d1d;
+        }
+
+        .status-badge.pending {
+            background: rgba(245, 158, 11, .08);
+            color: #78350f;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .status-dot.active {
+            background: #10b981;
+            box-shadow: 0 0 4px rgba(16, 185, 129, .5);
+        }
+
+        .status-dot.inactive {
+            background: #ef4444;
+        }
+
+        .status-dot.pending {
+            background: #f59e0b;
+        }
+
+        .me-badge {
+            display: inline-block;
+            padding: 2px 7px;
+            background: rgba(59, 130, 246, .08);
+            color: #1d4ed8;
+            border-radius: 99px;
+            font-size: 10px;
+            font-weight: 600;
+            font-family: 'Sora', sans-serif;
+            margin-left: 5px;
+        }
+
+        .invite-pending {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10.5px;
+            color: #92400e;
+            background: rgba(245, 158, 11, .08);
+            border: 1px solid rgba(245, 158, 11, .2);
+            border-radius: 99px;
+            padding: 2px 8px;
+            margin-top: 3px;
+        }
+
+        /* ═══════════════════════════════════════════
+               BOUTONS D'ACTION
+            ═══════════════════════════════════════════ */
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            color: #64748b;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+            transition: all 0.15s;
+            flex-shrink: 0;
+        }
+
+        .action-btn:hover {
+            background: #dbeafe;
+            border-color: #3b82f6;
+            color: #1d4ed8;
+        }
+
+        .action-btn.toggle:hover {
+            background: #fef3c7;
+            border-color: #f59e0b;
+            color: #92400e;
+        }
+
+        .action-btn.delete:hover {
+            background: #fee2e2;
+            border-color: #ef4444;
+            color: #b91c1c;
+        }
+
+        .action-btn.resend:hover {
+            background: #ede9fe;
+            border-color: #7c3aed;
+            color: #5b21b6;
+        }
+
+        .action-btn.reset-pwd:hover {
+            background: #fef3c7;
+            border-color: #f59e0b;
+            color: #92400e;
+        }
+
+        /* ═══════════════════════════════════════════
+               TABLEAU DESKTOP (≥ 641px)
+            ═══════════════════════════════════════════ */
         .users-table-wrap {
             background: rgba(255, 255, 255, 0.88);
             backdrop-filter: blur(14px);
             border: 1px solid rgba(255, 255, 255, 0.55);
             border-radius: 22px;
-            overflow: hidden;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
             box-shadow: 0 2px 16px rgba(11, 20, 35, 0.07);
         }
 
         .users-table {
             width: 100%;
             border-collapse: collapse;
+            min-width: 560px;
         }
 
         .users-table thead tr {
@@ -194,156 +424,11 @@
             margin-top: 1px;
         }
 
-        .role-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 4px 10px;
-            border-radius: 99px;
-            font-family: 'Sora', sans-serif;
-            font-size: 11px;
-            font-weight: 700;
-            border: 1px solid transparent;
-        }
-
-        .role-badge.admin {
-            background: rgba(245, 158, 11, 0.1);
-            color: #92400e;
-            border-color: rgba(245, 158, 11, 0.25);
-        }
-
-        .role-badge.proprietaire {
-            background: rgba(139, 92, 246, 0.1);
-            color: #4c1d95;
-            border-color: rgba(139, 92, 246, 0.25);
-        }
-
-        .role-badge.gestionnaire {
-            background: rgba(59, 130, 246, 0.1);
-            color: #1e40af;
-            border-color: rgba(59, 130, 246, 0.25);
-        }
-
-        .role-badge.collecteur {
-            background: rgba(16, 185, 129, 0.1);
-            color: #065f46;
-            border-color: rgba(16, 185, 129, 0.25);
-        }
-
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 4px 10px;
-            border-radius: 99px;
-            font-family: 'Sora', sans-serif;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .status-badge.active {
-            background: rgba(16, 185, 129, 0.08);
-            color: #065f46;
-        }
-
-        .status-badge.inactive {
-            background: rgba(239, 68, 68, 0.08);
-            color: #7f1d1d;
-        }
-
-        .status-badge.pending {
-            background: rgba(245, 158, 11, 0.08);
-            color: #78350f;
-        }
-
-        .status-dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-        }
-
-        .status-dot.active {
-            background: #10b981;
-            box-shadow: 0 0 4px rgba(16, 185, 129, 0.5);
-        }
-
-        .status-dot.inactive {
-            background: #ef4444;
-        }
-
-        .status-dot.pending {
-            background: #f59e0b;
-        }
-
-        .action-btn {
-            width: 32px;
-            height: 32px;
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            color: #64748b;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 14px;
-            text-decoration: none;
-            transition: all 0.15s;
-        }
-
-        .action-btn:hover {
-            background: #dbeafe;
-            border-color: #3b82f6;
-            color: #1d4ed8;
-        }
-
-        .action-btn.toggle:hover {
-            background: #fef3c7;
-            border-color: #f59e0b;
-            color: #92400e;
-        }
-
-        .action-btn.delete:hover {
-            background: #fee2e2;
-            border-color: #ef4444;
-            color: #b91c1c;
-        }
-
-        .action-btn.resend:hover {
-            background: #ede9fe;
-            border-color: #7c3aed;
-            color: #5b21b6;
-        }
-
-        .action-btn.reset-pwd:hover {
-            background: #fef3c7;
-            border-color: #f59e0b;
-            color: #92400e;
-        }
-
-        .invite-pending {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 10.5px;
-            color: #92400e;
-            background: rgba(245, 158, 11, 0.08);
-            border: 1px solid rgba(245, 158, 11, 0.2);
-            border-radius: 99px;
-            padding: 2px 8px;
-            margin-top: 3px;
-        }
-
-        .me-badge {
-            display: inline-block;
-            padding: 2px 7px;
-            background: rgba(59, 130, 246, 0.08);
-            color: #1d4ed8;
-            border-radius: 99px;
-            font-size: 10px;
-            font-weight: 600;
-            font-family: 'Sora', sans-serif;
-            margin-left: 6px;
+        .actions-wrap {
+            display: flex;
+            justify-content: flex-end;
+            gap: 6px;
+            flex-wrap: wrap;
         }
 
         .empty-users {
@@ -360,56 +445,198 @@
             opacity: 0.3;
         }
 
-        .link-box {
-            border-radius: 14px;
-            padding: 16px 20px;
+        /* ═══════════════════════════════════════════
+               CARDS MOBILE (≤ 640px)
+            ═══════════════════════════════════════════ */
+        .users-cards {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
         }
 
-        .link-box-title {
-            font-family: 'Sora', sans-serif;
-            font-size: 13px;
-            font-weight: 700;
-            margin-bottom: 10px;
+        .user-card {
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 18px;
+            padding: 14px 16px;
+            box-shadow: 0 2px 10px rgba(11, 20, 35, 0.06);
+            transition: box-shadow 0.2s;
+        }
+
+        .user-card.inactive-card {
+            opacity: 0.6;
+        }
+
+        .user-card-top {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 12px;
         }
 
-        .link-box-input {
-            width: 100%;
-            padding: 10px 14px;
-            border: 1px solid #cbd5e1;
-            border-radius: 10px;
-            font-size: 12.5px;
-            color: #334155;
-            background: white;
-            cursor: pointer;
-        }
-
-        .btn-copy {
-            margin-top: 10px;
-            padding: 9px 18px;
-            color: white;
-            border: none;
-            border-radius: 10px;
+        .user-card-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1d4088, #3b82f6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-family: 'Sora', sans-serif;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
+            font-size: 14px;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+            text-transform: uppercase;
         }
 
-        .btn-copy:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
+        .user-card-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .user-card-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 4px;
+            line-height: 1.3;
+        }
+
+        .user-card-email {
+            font-size: 11.5px;
+            color: #94a3b8;
+            margin-top: 2px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .user-card-meta {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(226, 232, 240, 0.5);
+        }
+
+        .user-card-date {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+
+        .user-card-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(226, 232, 240, 0.5);
+        }
+
+        /* Boutons actions plus grands sur mobile (touch targets 44px min) */
+        .user-card-actions .action-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            font-size: 15px;
+        }
+
+        /* ═══════════════════════════════════════════
+               INFO DROITS
+            ═══════════════════════════════════════════ */
+        .info-droits {
+            background: rgba(245, 158, 11, .07);
+            border: 1px solid rgba(245, 158, 11, .2);
+            border-radius: 14px;
+            padding: 12px 16px;
+            font-size: 12.5px;
+            color: #78350f;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .info-droits i {
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        /* ═══════════════════════════════════════════
+               RESPONSIVE BREAKPOINTS
+            ═══════════════════════════════════════════ */
+
+        /* Tablette large : on cache juste la colonne "Créé le" */
+        @media (max-width: 768px) {
+
+            .users-table th:nth-child(4),
+            .users-table td:nth-child(4) {
+                display: none;
+            }
+        }
+
+        /* Mobile : on bascule tableau → cards */
+        @media (max-width: 640px) {
+
+            /* Header empilé */
+            .users-header {
+                flex-direction: column;
+                gap: 14px;
+                padding: 1rem 1.1rem;
+                border-radius: 18px;
+            }
+
+            .users-header-title {
+                font-size: 1rem;
+            }
+
+            /* Bouton pleine largeur */
+            .btn-add-user {
+                width: 100%;
+                justify-content: center;
+                padding: 11px 20px;
+                font-size: 14px;
+            }
+
+            /* Chips : taille légèrement réduite */
+            .role-stats {
+                gap: 6px;
+            }
+
+            .role-stat-chip {
+                font-size: 11px;
+                padding: 4px 10px;
+            }
+
+            /* Cacher le tableau, montrer les cards */
+            .users-table-wrap {
+                display: none;
+            }
+
+            .users-cards {
+                display: flex;
+            }
+
+            /* Info droits : texte plus lisible */
+            .info-droits {
+                font-size: 12px;
+                flex-direction: column;
+                gap: 6px;
+            }
         }
     </style>
 
     <div class="users-wrap">
 
-        {{-- Header --}}
+        {{-- ── Header ── --}}
         <div class="users-header">
-            <div>
+            <div style="flex:1; min-width:0;">
                 <div class="users-header-title">
                     <i class="bi bi-people-fill"></i>
                     Gestion des utilisateurs
@@ -417,8 +644,6 @@
                 <div class="users-header-sub">
                     {{ $users->count() }} utilisateur(s) enregistré(s) — seul l'admin peut créer des comptes
                 </div>
-            </div>
-            <div class="d-flex align-items-center gap-3 flex-wrap">
                 <div class="role-stats">
                     <div class="role-stat-chip">
                         <div class="role-stat-dot" style="background:#f59e0b;"></div>
@@ -437,24 +662,24 @@
                         {{ $users->where('role', 'collecteur')->count() }} Collecteur
                     </div>
                 </div>
-                <a href="{{ route('admin.users.create') }}" class="btn-add-user">
-                    <i class="bi bi-person-plus-fill"></i> Nouvel utilisateur
-                </a>
             </div>
+            <a href="{{ route('admin.users.create') }}" class="btn-add-user">
+                <i class="bi bi-person-plus-fill"></i> Nouvel utilisateur
+            </a>
         </div>
 
-        {{-- Message succès --}}
+        {{-- ── Succès ── --}}
         @if(session('success'))
-            <div
-                style="background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.2); border-radius:12px; padding:12px 16px; font-size:13px; color:#065f46; display:flex; align-items:center; gap:8px;">
+            <div class="alert-box"
+                style="background:rgba(16,185,129,.08); border:1px solid rgba(16,185,129,.2); color:#065f46;">
                 <i class="bi bi-check-circle-fill" style="color:#10b981;"></i>
                 {{ session('success') }}
             </div>
         @endif
 
-        {{-- Lien invitation --}}
+        {{-- ── Lien invitation ── --}}
         @if(session('invitation_link'))
-            <div class="link-box" style="background:rgba(59,130,246,0.06); border:1px solid rgba(59,130,246,0.2);">
+            <div class="link-box" style="background:rgba(59,130,246,.06); border:1px solid rgba(59,130,246,.2);">
                 <div class="link-box-title" style="color:#1d4ed8;">
                     🔗 Lien d'invitation — envoyez par WhatsApp ou SMS
                 </div>
@@ -468,9 +693,9 @@
             </div>
         @endif
 
-        {{-- Lien réinitialisation --}}
+        {{-- ── Lien réinitialisation ── --}}
         @if(session('reset_link'))
-            <div class="link-box" style="background:rgba(245,158,11,0.06); border:1px solid rgba(245,158,11,0.3);">
+            <div class="link-box" style="background:rgba(245,158,11,.06); border:1px solid rgba(245,158,11,.3);">
                 <div class="link-box-title" style="color:#92400e;">
                     🔑 Lien de réinitialisation — envoyez par WhatsApp ou SMS
                 </div>
@@ -484,16 +709,17 @@
             </div>
         @endif
 
-        {{-- Message erreur --}}
+        {{-- ── Erreur ── --}}
         @if(session('error'))
-            <div
-                style="background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.2); border-radius:12px; padding:12px 16px; font-size:13px; color:#7f1d1d; display:flex; align-items:center; gap:8px;">
+            <div class="alert-box" style="background:rgba(239,68,68,.08); border:1px solid rgba(239,68,68,.2); color:#7f1d1d;">
                 <i class="bi bi-exclamation-circle-fill" style="color:#ef4444;"></i>
                 {{ session('error') }}
             </div>
         @endif
 
-        {{-- Table --}}
+        {{-- ════════════════════════════════════════════
+        TABLEAU DESKTOP (caché sous 640px)
+        ════════════════════════════════════════════ --}}
         <div class="users-table-wrap">
             <table class="users-table">
                 <thead>
@@ -509,12 +735,9 @@
                     @forelse($users as $user)
                         <tr class="{{ !$user->is_active ? 'inactive-row' : '' }}">
 
-                            {{-- Utilisateur --}}
                             <td>
                                 <div class="user-cell">
-                                    <div class="user-avatar">
-                                        {{ strtoupper(substr($user->name, 0, 2)) }}
-                                    </div>
+                                    <div class="user-avatar">{{ strtoupper(substr($user->name, 0, 2)) }}</div>
                                     <div>
                                         <div class="user-name">
                                             {{ $user->name }}
@@ -533,7 +756,6 @@
                                 </div>
                             </td>
 
-                            {{-- Rôle --}}
                             <td>
                                 <span class="role-badge {{ $user->role }}">
                                     @if($user->role === 'admin')
@@ -548,12 +770,10 @@
                                 </span>
                             </td>
 
-                            {{-- Statut --}}
                             <td>
                                 @if(!$user->is_active && $user->invitations()->whereNull('accepted_at')->exists())
                                     <span class="status-badge pending">
-                                        <div class="status-dot pending"></div>
-                                        En attente
+                                        <div class="status-dot pending"></div> En attente
                                     </span>
                                 @else
                                     <span class="status-badge {{ $user->is_active ? 'active' : 'inactive' }}">
@@ -563,23 +783,17 @@
                                 @endif
                             </td>
 
-                            {{-- Date --}}
                             <td style="font-size:12px; color:#64748b;">
                                 {{ $user->created_at->format('d/m/Y') }}
                             </td>
 
-                            {{-- Actions --}}
                             <td>
-                                <div class="d-flex justify-content-end gap-2">
-
-                                    {{-- Modifier --}}
+                                <div class="actions-wrap">
                                     <a href="{{ route('admin.users.edit', $user) }}" class="action-btn" title="Modifier">
                                         <i class="bi bi-pencil"></i>
                                     </a>
 
                                     @if($user->id !== auth()->id())
-
-                                        {{-- Lien invitation (compte pas activé) --}}
                                         @if(!$user->is_active)
                                             <form method="POST" action="{{ route('admin.users.resend', $user) }}"
                                                 style="display:inline;">
@@ -590,7 +804,6 @@
                                             </form>
                                         @endif
 
-                                        {{-- Réinitialiser mot de passe (compte actif) --}}
                                         @if($user->is_active)
                                             <form method="POST" action="{{ route('admin.users.reset-password', $user) }}"
                                                 style="display:inline;">
@@ -601,7 +814,6 @@
                                             </form>
                                         @endif
 
-                                        {{-- Activer / Désactiver --}}
                                         <form method="POST" action="{{ route('admin.users.toggle', $user) }}"
                                             style="display:inline;">
                                             @csrf @method('PATCH')
@@ -611,7 +823,6 @@
                                             </button>
                                         </form>
 
-                                        {{-- Supprimer --}}
                                         <form method="POST" action="{{ route('admin.users.destroy', $user) }}"
                                             style="display:inline;"
                                             onsubmit="return confirm('Supprimer « {{ $user->name }} » ? Cette action est irréversible.')">
@@ -620,7 +831,6 @@
                                                 <i class="bi bi-trash3"></i>
                                             </button>
                                         </form>
-
                                     @endif
                                 </div>
                             </td>
@@ -639,10 +849,121 @@
             </table>
         </div>
 
-        {{-- Info droits --}}
-        <div
-            style="background:rgba(245,158,11,0.07); border:1px solid rgba(245,158,11,0.2); border-radius:14px; padding:12px 16px; font-size:12.5px; color:#78350f; display:flex; align-items:center; gap:8px;">
-            <i class="bi bi-info-circle-fill" style="color:#f59e0b; flex-shrink:0;"></i>
+        {{-- ════════════════════════════════════════════
+        CARDS MOBILE (cachées au-dessus de 640px)
+        ════════════════════════════════════════════ --}}
+        <div class="users-cards">
+            @forelse($users as $user)
+                <div class="user-card {{ !$user->is_active ? 'inactive-card' : '' }}">
+
+                    {{-- Top : avatar + nom + email --}}
+                    <div class="user-card-top">
+                        <div class="user-card-avatar">{{ strtoupper(substr($user->name, 0, 2)) }}</div>
+                        <div class="user-card-info">
+                            <div class="user-card-name">
+                                {{ $user->name }}
+                                @if($user->id === auth()->id())
+                                    <span class="me-badge">Moi</span>
+                                @endif
+                            </div>
+                            <div class="user-card-email">{{ $user->email }}</div>
+                            @if(!$user->is_active && $user->invitations()->whereNull('accepted_at')->exists())
+                                <div class="invite-pending" style="margin-top:5px;">
+                                    <i class="bi bi-envelope-exclamation" style="font-size:10px;"></i>
+                                    Invitation en attente
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    {{-- Meta : rôle + statut + date --}}
+                    <div class="user-card-meta">
+                        <span class="role-badge {{ $user->role }}">
+                            @if($user->role === 'admin')
+                                <i class="bi bi-shield-fill-check" style="font-size:11px;"></i> Admin
+                            @elseif($user->role === 'proprietaire')
+                                <i class="bi bi-house-fill" style="font-size:11px;"></i> Propriétaire
+                            @elseif($user->role === 'gestionnaire')
+                                <i class="bi bi-person-badge-fill" style="font-size:11px;"></i> Gestionnaire
+                            @else
+                                <i class="bi bi-basket-fill" style="font-size:11px;"></i> Collecteur
+                            @endif
+                        </span>
+
+                        @if(!$user->is_active && $user->invitations()->whereNull('accepted_at')->exists())
+                            <span class="status-badge pending">
+                                <div class="status-dot pending"></div> En attente
+                            </span>
+                        @else
+                            <span class="status-badge {{ $user->is_active ? 'active' : 'inactive' }}">
+                                <div class="status-dot {{ $user->is_active ? 'active' : 'inactive' }}"></div>
+                                {{ $user->is_active ? 'Actif' : 'Désactivé' }}
+                            </span>
+                        @endif
+
+                        <span class="user-card-date">{{ $user->created_at->format('d/m/Y') }}</span>
+                    </div>
+
+                    {{-- Actions --}}
+                    @if($user->id === auth()->id())
+                        <div class="user-card-actions">
+                            <a href="{{ route('admin.users.edit', $user) }}" class="action-btn" title="Modifier">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </div>
+                    @else
+                        <div class="user-card-actions">
+                            <a href="{{ route('admin.users.edit', $user) }}" class="action-btn" title="Modifier">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+
+                            @if(!$user->is_active)
+                                <form method="POST" action="{{ route('admin.users.resend', $user) }}" style="display:contents;">
+                                    @csrf
+                                    <button type="submit" class="action-btn resend" title="Générer lien invitation">
+                                        <i class="bi bi-link-45deg"></i>
+                                    </button>
+                                </form>
+                            @endif
+
+                            @if($user->is_active)
+                                <form method="POST" action="{{ route('admin.users.reset-password', $user) }}" style="display:contents;">
+                                    @csrf
+                                    <button type="submit" class="action-btn reset-pwd" title="Réinitialiser mot de passe">
+                                        <i class="bi bi-key"></i>
+                                    </button>
+                                </form>
+                            @endif
+
+                            <form method="POST" action="{{ route('admin.users.toggle', $user) }}" style="display:contents;">
+                                @csrf @method('PATCH')
+                                <button type="submit" class="action-btn toggle"
+                                    title="{{ $user->is_active ? 'Désactiver' : 'Activer' }}">
+                                    <i class="bi bi-{{ $user->is_active ? 'pause-fill' : 'play-fill' }}"></i>
+                                </button>
+                            </form>
+
+                            <form method="POST" action="{{ route('admin.users.destroy', $user) }}" style="display:contents;"
+                                onsubmit="return confirm('Supprimer « {{ $user->name }} » ?')">
+                                @csrf @method('DELETE')
+                                <button type="submit" class="action-btn delete" title="Supprimer">
+                                    <i class="bi bi-trash3"></i>
+                                </button>
+                            </form>
+                        </div>
+                    @endif
+                </div>
+            @empty
+                <div style="text-align:center; padding:2rem; color:#94a3b8; font-size:13px;">
+                    <i class="bi bi-people" style="font-size:2rem; display:block; margin-bottom:8px; opacity:.3;"></i>
+                    Aucun utilisateur — créez le premier compte
+                </div>
+            @endforelse
+        </div>
+
+        {{-- ── Info droits ── --}}
+        <div class="info-droits">
+            <i class="bi bi-info-circle-fill" style="color:#f59e0b;"></i>
             <div>
                 <strong>Droits :</strong>
                 <strong>Admin / Propriétaire</strong> — accès complet + gestion utilisateurs. &nbsp;

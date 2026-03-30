@@ -4,7 +4,6 @@
     --premium-blue: #1e3a8a;
     --premium-accent: #3b82f6;
     --premium-accent-light: #60a5fa;
-    /* ✅ Nouveau : bleu clair vif pour le bouton principal */
     --premium-btn-from: #38bdf8;
     --premium-btn-to: #7dd3fc;
     --premium-success: #10b981;
@@ -61,11 +60,6 @@
 }
 
 /* ─── Bouton principal ───────────────────────────────────────── */
-/*
- * ✅ CORRECTION : Bleu clair (sky-blue) au lieu du bleu foncé précédent.
- * Utilise --premium-btn-from (#38bdf8) → --premium-btn-to (#7dd3fc) pour
- * un rendu lumineux. Ombre colorée assortie.
- */
 .btn-primary-premium {
     background: linear-gradient(
         135deg,
@@ -212,6 +206,7 @@
     border-color: var(--premium-accent);
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
 }
+
 .premium-select:focus {
     border-color: var(--premium-accent);
     outline: none;
@@ -250,11 +245,6 @@
 }
 
 /* ─── Total card ─────────────────────────────────────────────── */
-/*
- * ✅ CORRECTION : Suppression du span ".total-currency" dans le HTML.
- * Le CSS ci-dessous ne cible plus ".total-currency" pour éviter toute
- * confusion. FinanceHelper::formatMoney() génère déjà "FCFA" dans le texte.
- */
 .total-card {
     background: linear-gradient(
         145deg,
@@ -357,6 +347,7 @@
     border-radius: 20px 0 0 20px;
     padding-left: 1.5rem;
 }
+
 .premium-table td:last-child {
     border-radius: 0 20px 20px 0;
     padding-right: 1.5rem;
@@ -400,15 +391,10 @@
     font-weight: 700;
     color: var(--premium-accent);
     white-space: nowrap;
+    display: inline-block;
 }
 
 /* ─── Boutons d'action ───────────────────────────────────────── */
-/*
- * ✅ CORRECTION : Remplacement de .btn-edit / .btn-delete par .btn-action
- * avec variantes .btn-action-edit et .btn-action-delete.
- * Design pill avec dégradé subtil et SVG inline dans le HTML.
- * Le bleu utilisé est le même sky-blue que le bouton principal.
- */
 .action-buttons {
     display: flex;
     gap: 0.4rem;
@@ -432,7 +418,6 @@
     overflow: hidden;
 }
 
-/* Modifier — bleu clair sky */
 .btn-action-edit {
     background: linear-gradient(
         135deg,
@@ -452,7 +437,6 @@
     box-shadow: 0 8px 18px -4px rgba(56, 189, 248, 0.55);
 }
 
-/* Supprimer — rouge corail */
 .btn-action-delete {
     background: linear-gradient(
         135deg,
@@ -607,9 +591,11 @@
         padding: 1.2rem;
         border-radius: 20px;
     }
+
     .page-header > div:last-child {
         width: 100%;
     }
+
     .btn-primary-premium {
         width: 100%;
         justify-content: center;
@@ -630,7 +616,6 @@
         padding: 1rem;
         border-radius: 18px;
     }
-
     .total-card {
         padding: 1.25rem;
     }
@@ -642,18 +627,22 @@
         padding: 0.75rem;
         border-spacing: 0 6px;
     }
+
     .premium-table thead th {
         font-size: 0.65rem;
         padding: 0.75rem 0.4rem;
     }
+
     .premium-table td {
         padding: 0.9rem 0.4rem;
         font-size: 0.85rem;
     }
+
     .premium-table td:first-child {
         padding-left: 0.75rem;
         border-radius: 14px 0 0 14px;
     }
+
     .premium-table td:last-child {
         padding-right: 0.75rem;
         border-radius: 0 14px 14px 0;
@@ -668,14 +657,15 @@
     .amount-badge {
         font-size: 0.95rem;
     }
-
     .modal-body-premium {
         padding: 1.25rem;
     }
+
     .modal-footer-premium {
         flex-direction: column;
         padding: 0.75rem 1.25rem 1.25rem;
     }
+
     .modal-footer-premium .btn,
     .modal-footer-premium .btn-primary-premium {
         width: 100% !important;
@@ -693,10 +683,14 @@
     }
 
     .page-header {
+        flex-direction: column;
+        align-items: flex-start;
         padding: 1rem;
         border-radius: 16px;
         margin-bottom: 1.25rem;
+        gap: 0.75rem;
     }
+
     .page-title {
         font-size: 1.35rem;
     }
@@ -704,51 +698,149 @@
         font-size: 0.8rem;
     }
 
+    .btn-primary-premium {
+        width: 100%;
+        justify-content: center;
+        padding: 0.7rem 1rem;
+    }
+
     .stat-card {
-        padding: 1rem;
+        padding: 0.875rem;
         border-radius: 18px;
     }
     .stat-value {
-        font-size: 1.25rem;
+        font-size: 1rem;
+        word-break: break-word;
+    }
+    .stat-icon {
+        font-size: 1.8rem;
     }
 
     .filters-card {
         border-radius: 14px;
         padding: 0.875rem;
     }
+    .filters-card .row {
+        row-gap: 0.6rem !important;
+    }
+
+    .filters-card .col-12.col-sm-6.col-lg-3,
+    .filters-card .col-6.col-sm-6.col-lg-2 {
+        width: 50% !important;
+        flex: 0 0 50% !important;
+        max-width: 50% !important;
+    }
+
+    .filters-card .col-12.col-sm-6.col-lg-3:last-child {
+        width: 100% !important;
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+    }
+
     .total-card {
-        padding: 1.2rem;
+        padding: 1.1rem;
         border-radius: 18px;
     }
     .total-value {
-        font-size: 1.3rem;
+        font-size: 1.25rem;
     }
 
-    /* Masquer "Semaine" et "Date de Saisie" sur mobile */
+    /* ══════════════════════════════════════════════════════════
+       TABLEAU MOBILE — SOLUTION DÉFINITIVE
+       Bootstrap cache déjà col 2 (Semaine) et col 3 (Date).
+       On force table-layout:fixed + largeurs explicites pour
+       garantir que le Montant (col 4) est TOUJOURS visible.
+       ══════════════════════════════════════════════════════════ */
+    .premium-table {
+        table-layout: fixed !important;
+        width: 100% !important;
+        padding: 0.5rem;
+        border-spacing: 0 5px;
+    }
+
+    /* Col 1 — Machine */
+    .premium-table thead th:nth-child(1),
+    .premium-table tbody td:nth-child(1) {
+        width: 45% !important;
+    }
+
+    /* Col 2 — Semaine (cachée par Bootstrap d-none) → 0 */
     .premium-table thead th:nth-child(2),
-    .premium-table tbody td:nth-child(2),
+    .premium-table tbody td:nth-child(2) {
+        width: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+    }
+
+    /* Col 3 — Date (cachée par Bootstrap d-none) → 0 */
     .premium-table thead th:nth-child(3),
     .premium-table tbody td:nth-child(3) {
-        display: none;
+        width: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
     }
 
-    .premium-table {
-        padding: 0.5rem;
-        border-spacing: 0 4px;
+    /* ✅ Col 4 — Montant : TOUJOURS VISIBLE */
+    .premium-table thead th:nth-child(4),
+    .premium-table tbody td:nth-child(4) {
+        width: 33% !important;
+        display: table-cell !important;
+        text-align: right !important;
+        padding-right: 0.5rem !important;
     }
+
+    /* Col 5 — Actions */
+    .premium-table thead th:nth-child(5),
+    .premium-table tbody td:nth-child(5) {
+        width: 22% !important;
+        text-align: right !important;
+    }
+
     .premium-table thead th {
         font-size: 0.6rem;
         padding: 0.6rem 0.3rem;
     }
+
     .premium-table td {
         padding: 0.75rem 0.3rem;
-        font-size: 0.8rem;
+        font-size: 0.82rem;
     }
+
     .premium-table td:first-child {
         padding-left: 0.5rem;
+        border-radius: 14px 0 0 14px;
     }
+
     .premium-table td:last-child {
         padding-right: 0.5rem;
+        border-radius: 0 14px 14px 0;
+    }
+
+    .premium-table td:first-child .fw-bold {
+        font-size: 0.8rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 110px;
+        display: block;
+    }
+
+    .premium-table td:first-child small {
+        font-size: 0.7rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 110px;
+        display: block;
+    }
+
+    .amount-badge {
+        font-size: 0.8rem;
+        white-space: nowrap;
+        display: block;
+        text-align: right;
+        font-weight: 700;
+        color: var(--premium-accent);
     }
 
     .machine-avatar {
@@ -757,18 +849,13 @@
         font-size: 1rem;
         border-radius: 10px;
     }
-    .week-badge {
-        font-size: 0.7rem;
-        padding: 0.35rem 0.6rem;
-    }
-    .amount-badge {
-        font-size: 0.9rem;
-    }
-
     .btn-action {
         width: 32px;
         height: 32px;
         border-radius: 10px;
+    }
+    .action-buttons {
+        gap: 0.3rem;
     }
 
     .premium-modal .modal-dialog {
@@ -783,16 +870,16 @@
     .modal-body-premium {
         padding: 1rem;
     }
+
     .modal-footer-premium {
+        flex-direction: column;
         padding: 0.75rem 1rem 1rem;
     }
 
-    .modal-body-premium .row.g-3 {
-        flex-direction: column;
-    }
-    .modal-body-premium .col-md-6 {
+    .modal-footer-premium .btn,
+    .modal-footer-premium .btn-primary-premium {
         width: 100% !important;
-        max-width: 100% !important;
+        justify-content: center;
     }
 
     .empty-state {
@@ -804,19 +891,101 @@
 }
 
 /* ════════════════════════════════════════════════════════════════
-   MINI MOBILE ≤ 360px
+   iPhone SE 3e gen / petits Android ≤ 390px
    ════════════════════════════════════════════════════════════════ */
-@media (max-width: 360px) {
-    .page-title {
-        font-size: 1.2rem;
+@media (max-width: 390px) {
+    .stat-value {
+        font-size: 0.9rem;
     }
     .total-value {
         font-size: 1.1rem;
     }
-    .stat-value {
-        font-size: 1.1rem;
+
+    .premium-table thead th:nth-child(1),
+    .premium-table tbody td:nth-child(1) {
+        width: 42% !important;
     }
+
+    .premium-table thead th:nth-child(4),
+    .premium-table tbody td:nth-child(4) {
+        width: 36% !important;
+    }
+
+    .premium-table thead th:nth-child(5),
+    .premium-table tbody td:nth-child(5) {
+        width: 22% !important;
+    }
+
     .amount-badge {
+        font-size: 0.75rem;
+    }
+    .machine-avatar {
+        width: 30px;
+        height: 30px;
+        font-size: 0.9rem;
+    }
+    .premium-table td {
+        font-size: 0.78rem;
+    }
+
+    .premium-table td:first-child .fw-bold {
+        max-width: 90px;
+        font-size: 0.75rem;
+    }
+    .premium-table td:first-child small {
+        max-width: 90px;
+        font-size: 0.65rem;
+    }
+
+    .btn-action {
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+    }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   iPhone SE 1re gen / très petits ≤ 360px
+   ════════════════════════════════════════════════════════════════ */
+@media (max-width: 360px) {
+    .page-title {
+        font-size: 1.15rem;
+    }
+    .total-value {
+        font-size: 0.95rem;
+    }
+    .stat-value {
         font-size: 0.85rem;
+    }
+
+    .premium-table thead th:nth-child(1),
+    .premium-table tbody td:nth-child(1) {
+        width: 40% !important;
+    }
+
+    .premium-table thead th:nth-child(4),
+    .premium-table tbody td:nth-child(4) {
+        width: 38% !important;
+    }
+
+    .premium-table thead th:nth-child(5),
+    .premium-table tbody td:nth-child(5) {
+        width: 22% !important;
+    }
+
+    .amount-badge {
+        font-size: 0.7rem;
+    }
+    .btn-action {
+        width: 26px;
+        height: 26px;
+        border-radius: 8px;
+    }
+
+    .premium-table td:first-child .fw-bold {
+        max-width: 80px;
+    }
+    .premium-table td:first-child small {
+        max-width: 80px;
     }
 }

@@ -112,11 +112,6 @@
         </div>
 
         <!-- Total filtré -->
-        {{--
-        ✅ CORRECTION : Suppression du span .total-currency "FCFA"
-        car FinanceHelper::formatMoney() inclut déjà "FCFA" dans le montant formaté.
-        Cela évitait l'affichage "454 900 FCFA FCFA".
-        --}}
         <div class="row g-3 g-md-4 mb-4">
             <div class="col-12">
                 <div class="total-card">
@@ -141,22 +136,33 @@
                 <table class="premium-table">
                     <thead>
                         <tr>
+                            {{-- Col 1 : Machine — toujours visible --}}
                             <th>Point de Distribution</th>
+
+                            {{-- Col 2 : Semaine — cachée sur mobile par Bootstrap --}}
                             <th class="text-center d-none d-sm-table-cell">Semaine</th>
+
+                            {{-- Col 3 : Date — cachée sur tablette et mobile --}}
                             <th class="d-none d-md-table-cell">Date de Saisie</th>
-                            <th>Montant</th>
+
+                            {{-- Col 4 : Montant — TOUJOURS VISIBLE (aucune classe d-none) --}}
+                            <th class="text-end">Montant</th>
+
+                            {{-- Col 5 : Actions — toujours visible --}}
                             <th class="text-end">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($collectes as $c)
                             <tr>
+                                {{-- Col 1 : Machine --}}
                                 <td>
                                     <div class="d-flex align-items-center gap-2">
                                         <div class="machine-avatar"><i class="bi bi-shop"></i></div>
-                                        <div>
+                                        <div style="min-width:0;">
                                             <span class="fw-bold d-block">{{ $c->point->nom_machine }}</span>
                                             <small class="text-muted d-block">{{ $c->point->lieu }}</small>
+                                            {{-- Semaine affichée sous le nom uniquement sur mobile --}}
                                             <small class="d-block d-sm-none text-muted mt-1">
                                                 <i class="bi bi-calendar-week" style="color:var(--premium-accent);"></i>
                                                 {{ $c->semaine }}
@@ -164,23 +170,30 @@
                                         </div>
                                     </div>
                                 </td>
+
+                                {{-- Col 2 : Semaine — cachée sur mobile --}}
                                 <td class="text-center d-none d-sm-table-cell">
                                     <span class="week-badge">
                                         <i class="bi bi-calendar-week"></i> {{ $c->semaine }}
                                     </span>
                                 </td>
+
+                                {{-- Col 3 : Date — cachée sur tablette et mobile --}}
                                 <td class="d-none d-md-table-cell">
                                     <div class="d-flex align-items-center text-muted">
                                         <i class="bi bi-calendar3 me-2"></i>
                                         {{ Carbon\Carbon::parse($c->date_collecte)->format('d M Y') }}
                                     </div>
                                 </td>
-                                <td>
+
+                                {{-- Col 4 : Montant — TOUJOURS VISIBLE --}}
+                                <td class="text-end">
                                     <span class="amount-badge">{{ FinanceHelper::formatMoney($c->montant) }}</span>
                                 </td>
+
+                                {{-- Col 5 : Actions --}}
                                 <td class="text-end">
                                     <div class="action-buttons">
-                                        {{-- ✅ Bouton Modifier avec icône crayon améliorée --}}
                                         <button type="button" class="btn-action btn-action-edit" data-bs-toggle="modal"
                                             data-bs-target="#editCollecte{{ $c->id }}" title="Modifier">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
@@ -190,7 +203,6 @@
                                                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                                             </svg>
                                         </button>
-                                        {{-- ✅ Bouton Supprimer avec icône corbeille améliorée --}}
                                         @if(in_array(auth()->user()->role, ['admin', 'proprietaire']))
                                             <form action="{{ route('collectes.destroy', $c->id) }}" method="POST"
                                                 onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette collecte ?')"

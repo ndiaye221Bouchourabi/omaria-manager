@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     {{-- viewport-fit=cover : gère les encoches iPhone --}}
     <meta name="theme-color" content="#0c1a38">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="icon" type="image/jpeg" href="{{ asset('img/logo.jpeg') }}">
@@ -131,7 +132,7 @@
                 <form method="POST" action="{{ route('logout') }}" style="flex-shrink:0;">
                     @csrf
                     <button type="submit" title="Se déconnecter" style="background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.35);
-                                               font-size:17px;padding:4px 6px;transition:color 0.2s;line-height:1;"
+                                                   font-size:17px;padding:4px 6px;transition:color 0.2s;line-height:1;"
                         onmouseover="this.style.color='rgba(239,68,68,0.8)'"
                         onmouseout="this.style.color='rgba(255,255,255,0.35)'">
                         <i class="bi bi-box-arrow-right"></i>
@@ -229,12 +230,12 @@
 
                             {{-- Avatar initiales --}}
                             <div style="
-                                                width:34px; height:34px; min-width:34px; border-radius:50%;
-                                                background:linear-gradient(135deg, #1d4088, #3b82f6);
-                                                display:flex; align-items:center; justify-content:center;
-                                                font-family:'Sora',sans-serif; font-size:11px; font-weight:700;
-                                                color:white; border:2px solid rgba(15,34,82,0.1);
-                                                flex-shrink:0;">
+                                                    width:34px; height:34px; min-width:34px; border-radius:50%;
+                                                    background:linear-gradient(135deg, #1d4088, #3b82f6);
+                                                    display:flex; align-items:center; justify-content:center;
+                                                    font-family:'Sora',sans-serif; font-size:11px; font-weight:700;
+                                                    color:white; border:2px solid rgba(15,34,82,0.1);
+                                                    flex-shrink:0;">
                                 {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
                             </div>
 
@@ -242,12 +243,12 @@
                             <div class="d-none d-md-flex flex-column" style="line-height:1.2;min-width:0;">
                                 <span
                                     style="font-size:13px;font-weight:600;color:#0f172a;
-                                                             white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px;">
+                                                                 white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px;">
                                     {{ auth()->user()->name }}
                                 </span>
                                 <span
                                     style="font-size:10px;font-weight:700;font-family:'Sora',sans-serif;
-                                                             color:{{ $navColor }};letter-spacing:0.3px;white-space:nowrap;">
+                                                                 color:{{ $navColor }};letter-spacing:0.3px;white-space:nowrap;">
                                     @if(auth()->user()->role === 'admin')
                                         <i class="bi bi-shield-fill-check" style="font-size:9px;"></i>
                                     @elseif(auth()->user()->role === 'proprietaire')
@@ -280,7 +281,7 @@
                     <i class="bi bi-check-circle-fill" style="flex-shrink:0;"></i>
                     <span style="flex:1;min-width:0;">{{ session('success') }}</span>
                     <button onclick="this.parentElement.remove()" style="margin-left:auto;background:none;border:none;cursor:pointer;font-size:16px;
-                                               color:inherit;opacity:0.6;flex-shrink:0;padding:0 2px;">
+                                                   color:inherit;opacity:0.6;flex-shrink:0;padding:0 2px;">
                         <i class="bi bi-x"></i>
                     </button>
                 </div>
@@ -294,7 +295,7 @@
                     <i class="bi bi-exclamation-triangle-fill" style="flex-shrink:0;"></i>
                     <span style="flex:1;min-width:0;">{{ session('error') }}</span>
                     <button onclick="this.parentElement.remove()" style="margin-left:auto;background:none;border:none;cursor:pointer;font-size:16px;
-                                               color:inherit;opacity:0.6;flex-shrink:0;padding:0 2px;">
+                                                   color:inherit;opacity:0.6;flex-shrink:0;padding:0 2px;">
                         <i class="bi bi-x"></i>
                     </button>
                 </div>

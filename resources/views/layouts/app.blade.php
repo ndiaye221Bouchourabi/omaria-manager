@@ -12,6 +12,14 @@
     <link rel="icon" type="image/jpeg" href="{{ asset('img/logo.jpeg') }}">
     <title>O'Maria — @yield('page-title', 'Dashboard')</title>
 
+    {{-- ═══════════════════════════════════════════════════════
+    PWA — manifest + icône Apple
+    ═══════════════════════════════════════════════════════ --}}
+    <link rel="manifest" href="/manifest.json">
+    <meta name="apple-mobile-web-app-title" content="O'Maria">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    {{-- ═══════════════════════════════════════════════════════ --}}
+
     <link
         href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap"
         rel="stylesheet">
@@ -132,7 +140,7 @@
                 <form method="POST" action="{{ route('logout') }}" style="flex-shrink:0;">
                     @csrf
                     <button type="submit" title="Se déconnecter" style="background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.35);
-                                                   font-size:17px;padding:4px 6px;transition:color 0.2s;line-height:1;"
+                                                       font-size:17px;padding:4px 6px;transition:color 0.2s;line-height:1;"
                         onmouseover="this.style.color='rgba(239,68,68,0.8)'"
                         onmouseout="this.style.color='rgba(255,255,255,0.35)'">
                         <i class="bi bi-box-arrow-right"></i>
@@ -230,12 +238,12 @@
 
                             {{-- Avatar initiales --}}
                             <div style="
-                                                    width:34px; height:34px; min-width:34px; border-radius:50%;
-                                                    background:linear-gradient(135deg, #1d4088, #3b82f6);
-                                                    display:flex; align-items:center; justify-content:center;
-                                                    font-family:'Sora',sans-serif; font-size:11px; font-weight:700;
-                                                    color:white; border:2px solid rgba(15,34,82,0.1);
-                                                    flex-shrink:0;">
+                                                        width:34px; height:34px; min-width:34px; border-radius:50%;
+                                                        background:linear-gradient(135deg, #1d4088, #3b82f6);
+                                                        display:flex; align-items:center; justify-content:center;
+                                                        font-family:'Sora',sans-serif; font-size:11px; font-weight:700;
+                                                        color:white; border:2px solid rgba(15,34,82,0.1);
+                                                        flex-shrink:0;">
                                 {{ strtoupper(substr(auth()->user()->name, 0, 2)) }}
                             </div>
 
@@ -243,12 +251,12 @@
                             <div class="d-none d-md-flex flex-column" style="line-height:1.2;min-width:0;">
                                 <span
                                     style="font-size:13px;font-weight:600;color:#0f172a;
-                                                                 white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px;">
+                                                                     white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px;">
                                     {{ auth()->user()->name }}
                                 </span>
                                 <span
                                     style="font-size:10px;font-weight:700;font-family:'Sora',sans-serif;
-                                                                 color:{{ $navColor }};letter-spacing:0.3px;white-space:nowrap;">
+                                                                     color:{{ $navColor }};letter-spacing:0.3px;white-space:nowrap;">
                                     @if(auth()->user()->role === 'admin')
                                         <i class="bi bi-shield-fill-check" style="font-size:9px;"></i>
                                     @elseif(auth()->user()->role === 'proprietaire')
@@ -281,7 +289,7 @@
                     <i class="bi bi-check-circle-fill" style="flex-shrink:0;"></i>
                     <span style="flex:1;min-width:0;">{{ session('success') }}</span>
                     <button onclick="this.parentElement.remove()" style="margin-left:auto;background:none;border:none;cursor:pointer;font-size:16px;
-                                                   color:inherit;opacity:0.6;flex-shrink:0;padding:0 2px;">
+                                                       color:inherit;opacity:0.6;flex-shrink:0;padding:0 2px;">
                         <i class="bi bi-x"></i>
                     </button>
                 </div>
@@ -295,7 +303,7 @@
                     <i class="bi bi-exclamation-triangle-fill" style="flex-shrink:0;"></i>
                     <span style="flex:1;min-width:0;">{{ session('error') }}</span>
                     <button onclick="this.parentElement.remove()" style="margin-left:auto;background:none;border:none;cursor:pointer;font-size:16px;
-                                                   color:inherit;opacity:0.6;flex-shrink:0;padding:0 2px;">
+                                                       color:inherit;opacity:0.6;flex-shrink:0;padding:0 2px;">
                         <i class="bi bi-x"></i>
                     </button>
                 </div>
@@ -329,9 +337,7 @@
         function openSidebar() {
             sidebar.classList.add('active');
             overlay.classList.add('active');
-            // Sur grand écran seulement, on pousse le contenu
             if (window.innerWidth > 992) mainWrap.classList.add('sidebar-open');
-            // Empêche le scroll du body quand la sidebar est ouverte sur mobile
             document.body.style.overflow = window.innerWidth <= 992 ? 'hidden' : '';
         }
 
@@ -348,7 +354,6 @@
         closeBtn?.addEventListener('click', closeSidebar);
         overlay?.addEventListener('click', closeSidebar);
 
-        // Fermer la sidebar en cas de redimensionnement vers grand écran
         window.addEventListener('resize', () => {
             if (window.innerWidth > 992) {
                 document.body.style.overflow = '';
@@ -356,7 +361,7 @@
         });
 
         /* ================================================================
-           SWIPE-TO-CLOSE sur mobile (glisser vers la gauche)
+           SWIPE-TO-CLOSE sur mobile
         ================================================================ */
         (function () {
             let startX = 0, startY = 0;
@@ -367,7 +372,6 @@
             sidebar.addEventListener('touchend', e => {
                 const dx = e.changedTouches[0].clientX - startX;
                 const dy = Math.abs(e.changedTouches[0].clientY - startY);
-                // Swipe gauche > 60px & glissement horizontal dominant
                 if (dx < -60 && dy < 40) closeSidebar();
             }, { passive: true });
         })();
@@ -469,6 +473,17 @@
                 n.style.transition = 'opacity 0.35s';
                 setTimeout(() => n.remove(), 400);
             }, 3500);
+        }
+
+        /* ================================================================
+           PWA — Enregistrement du Service Worker
+        ================================================================ */
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(() => console.log('✅ PWA Service Worker enregistré'))
+                    .catch(err => console.warn('SW erreur :', err));
+            });
         }
     </script>
 

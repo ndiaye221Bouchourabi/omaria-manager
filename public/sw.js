@@ -1,8 +1,6 @@
-const CACHE_NAME = "omaria-v1";
+const CACHE_NAME = "omaria-v2";
 
-// Fichiers à mettre en cache pour le mode hors-ligne
 const ASSETS_TO_CACHE = [
-    "/",
     "/css/collecte.css",
     "/css/dashboard.css",
     "/css/depenses.css",
@@ -13,65 +11,82 @@ const ASSETS_TO_CACHE = [
     "/manifest.json",
 ];
 
-// ── Installation : mise en cache des assets ──────────────────
+// ── Installation ──────────────────────────────────────────────
 self.addEventListener("install", (event) => {
     event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => {
-            return cache.addAll(ASSETS_TO_CACHE);
-        }),
+        caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS_TO_CACHE)),
     );
     self.skipWaiting();
 });
 
-// ── Activation : suppression des anciens caches ───────────────
+// ── Activation ────────────────────────────────────────────────
 self.addEventListener("activate", (event) => {
     event.waitUntil(
-        caches.keys().then((keys) => {
-            return Promise.all(
-                keys
-                    .filter((key) => key !== CACHE_NAME)
-                    .map((key) => caches.delete(key)),
-            );
-        }),
+        caches
+            .keys()
+            .then((keys) =>
+                Promise.all(
+                    keys
+                        .filter((k) => k !== CACHE_NAME)
+                        .map((k) => caches.delete(k)),
+                ),
+            ),
     );
     self.clients.claim();
 });
 
-// ── Fetch : cache en priorité, réseau en fallback ────────────
+// ── Fetch ─────────────────────────────────────────────────────
 self.addEventListener("fetch", (event) => {
-    // Ignorer les requêtes non-GET (POST, PUT, DELETE pour Laravel)
-    if (event.request.method !== "GET") return;
+    const { request } = event;
+    const url = new URL(request.url);
 
-    // Ignorer les requêtes vers d'autres domaines
-    if (!event.request.url.startsWith(self.location.origin)) return;
+    // ✅ 1. Ignorer tout sauf GET
+    if (request.method !== "GET") return;
 
+    // ✅ 2. Ignorer les autres domaines (CDN, fonts, etc.)
+    if (url.origin !== self.location.origin) return;
+
+    // ✅ 3. CRITIQUE — laisser Laravel gérer toutes les pages HTML
+    if (request.mode === "navigate") return;
+
+    // ✅ 4. Ignorer les routes Laravel sensibles
+    const laravelRoutes = [
+        "/login",
+        "/logout",
+        "/dashboard",
+        "/collectes",
+        "/depenses",
+        "/points",
+        "/admin",
+    ];
+    if (laravelRoutes.some((route) => url.pathname.startsWith(route))) return;
+
+    // ✅ 5. Seulement cacher les assets statiques
+    const isStaticAsset =
+        url.pathname.includes("/css/") ||
+        url.pathname.includes("/js/") ||
+        url.pathname.includes("/img/") ||
+        url.pathname.includes("/icons/") ||
+        url.pathname.includes("/build/") ||
+        url.pathname.includes("/fonts/");
+
+    if (!isStaticAsset) return;
+
+    // Cache-first pour les assets
     event.respondWith(
-        caches.match(event.request).then((cachedResponse) => {
-            if (cachedResponse) {
-                return cachedResponse;
-            }
-            return fetch(event.request)
-                .then((networkResponse) => {
-                    // Mettre en cache les nouvelles réponses CSS/JS/images
-                    if (
-                        networkResponse.ok &&
-                        (event.request.url.includes("/css/") ||
-                            event.request.url.includes("/js/") ||
-                            event.request.url.includes("/img/") ||
-                            event.request.url.includes("/icons/") ||
-                            event.request.url.includes("/build/"))
-                    ) {
-                        const responseClone = networkResponse.clone();
-                        caches.open(CACHE_NAME).then((cache) => {
-                            cache.put(event.request, responseClone);
-                        });
-                    }
-                    return networkResponse;
-                })
-                .catch(() => {
-                    // Page hors-ligne de secours si disponible
-                    return caches.match("/");
-                });
+        caches.match(request).then((cached) => {
+            if (cached) return cached;
+
+            return fetch(request).then((response) => {
+                // Ne cacher que les réponses propres
+                if (response.ok && response.type === "basic") {
+                    const clone = response.clone();
+                    caches
+                        .open(CACHE_NAME)
+                        .then((cache) => cache.put(request, clone));
+                }
+                return response;
+            });
         }),
     );
 });

@@ -47,7 +47,8 @@
                 <div class="stat-card">
                     <div class="stat-label">Dépenses Points</div>
                     <div class="stat-value" style="color:var(--premium-purple);">
-                        {{ FinanceHelper::formatMoney($totalSpecifique ?? 0) }}</div>
+                        {{ FinanceHelper::formatMoney($totalSpecifique ?? 0) }}
+                    </div>
                     <i class="bi bi-geo-alt stat-icon" style="color:var(--premium-purple);"></i>
                 </div>
             </div>
@@ -149,8 +150,8 @@
             </div>
         @endif
 
-        <!-- Tableau -->
-        <div class="table-container">
+        <!-- Version Tableau pour Desktop -->
+        <div class="table-container d-none d-md-block">
             <div class="table-responsive">
                 <table class="premium-table">
                     <thead>
@@ -170,23 +171,17 @@
                                     @if($d->portee == 'point')
                                         <div class="badge-point">
                                             <i class="bi bi-geo-alt-fill"></i>
-                                            <span class="d-none d-sm-inline">{{ $d->point->nom_machine ?? 'Point inconnu' }}</span>
-                                            <span class="d-inline d-sm-none">Point</span>
+                                            <span>{{ $d->point->nom_machine ?? 'Point inconnu' }}</span>
                                         </div>
                                     @else
                                         <div class="badge-global">
                                             <i class="bi bi-globe2"></i>
-                                            <span class="d-none d-sm-inline">Globale</span>
+                                            <span>Globale</span>
                                         </div>
                                     @endif
                                 </td>
                                 <td>
                                     <span class="fw-bold">{{ $d->type_depense }}</span>
-                                    {{-- Date visible sous le type sur mobile --}}
-                                    <small class="d-block d-sm-none text-muted mt-1">
-                                        <i class="bi bi-calendar3 me-1"></i>
-                                        {{ Carbon\Carbon::parse($d->date_depense)->format('d/m/Y') }}
-                                    </small>
                                 </td>
                                 <td class="d-none d-md-table-cell">
                                     <span class="text-muted small">{{ Str::limit($d->description, 30) ?: '—' }}</span>
@@ -234,6 +229,79 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+
+        <!-- Version Cartes pour Mobile -->
+        <div class="cards-view d-block d-md-none">
+            @forelse($depenses as $d)
+                <div class="expense-card">
+                    <div class="card-header">
+                        <div class="card-badge">
+                            @if($d->portee == 'point')
+                                <div class="badge-point">
+                                    <i class="bi bi-geo-alt-fill"></i>
+                                    <span>{{ $d->point->nom_machine ?? 'Point inconnu' }}</span>
+                                </div>
+                            @else
+                                <div class="badge-global">
+                                    <i class="bi bi-globe2"></i>
+                                    <span>Globale</span>
+                                </div>
+                            @endif
+                        </div>
+                        <div class="card-actions">
+                            @if(in_array(auth()->user()->role, ['admin', 'proprietaire', 'gestionnaire']))
+                                <button class="action-btn" data-bs-toggle="modal" data-bs-target="#editModal{{ $d->id }}"
+                                    title="Modifier">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+                            @endif
+                            @if(in_array(auth()->user()->role, ['admin', 'proprietaire']))
+                                <form action="{{ route('depenses.destroy', $d->id) }}" method="POST"
+                                    onsubmit="return confirm('⚠️ Supprimer cette dépense ?')">
+                                    @csrf @method('DELETE')
+                                    <button type="submit" class="action-btn delete" title="Supprimer">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                </form>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="card-row">
+                            <span class="card-label">Type de dépense</span>
+                            <span class="card-value fw-bold">{{ $d->type_depense }}</span>
+                        </div>
+
+                        @if($d->description)
+                            <div class="card-row">
+                                <span class="card-label">Description</span>
+                                <span class="card-value text-muted">{{ Str::limit($d->description, 50) }}</span>
+                            </div>
+                        @endif
+
+                        <div class="card-row">
+                            <span class="card-label">Date</span>
+                            <span class="card-value">
+                                <i class="bi bi-calendar3 me-1"></i>
+                                {{ Carbon\Carbon::parse($d->date_depense)->format('d/m/Y') }}
+                            </span>
+                        </div>
+
+                        <div class="card-row highlight">
+                            <span class="card-label">Montant</span>
+                            <span class="card-value montant-3dec">{{ FinanceHelper::formatMoney($d->montant) }}</span>
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div class="empty-state">
+                    <i class="bi bi-inbox"></i>
+                    <h6 class="fw-bold">Aucune dépense trouvée</h6>
+                    <p class="small text-muted">Commencez par ajouter une dépense</p>
+                </div>
+            @endforelse
         </div>
     </div>
 

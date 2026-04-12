@@ -6,6 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>O'Maria — Connexion</title>
 
+    {{-- ═══════════════════════════════════════════════════════
+    PWA — manifest + icône Apple
+    ═══════════════════════════════════════════════════════ --}}
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#0b1423">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="O'Maria">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    {{-- ═══════════════════════════════════════════════════════ --}}
+
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
@@ -549,6 +561,17 @@
                 pwd.type = 'password';
                 eye.className = 'bi bi-eye-fill';
             }
+        }
+
+        /* ================================================================
+           PWA — Enregistrement du Service Worker
+        ================================================================ */
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(() => console.log('✅ PWA Service Worker enregistré'))
+                    .catch(err => console.warn('SW erreur :', err));
+            });
         }
     </script>
 

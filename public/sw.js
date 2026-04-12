@@ -1,4 +1,4 @@
-const CACHE_NAME = "omaria-v3";
+const CACHE_NAME = "omaria-v4";
 
 const ASSETS_TO_CACHE = [
     "/css/collecte.css",

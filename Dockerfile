@@ -1,10 +1,11 @@
 FROM php:8.4-cli
 
+
 RUN apt-get update && apt-get install -y \
     git curl zip unzip libzip-dev libpng-dev \
     libxml2-dev libonig-dev nodejs npm \
-    && docker-php-ext-install pdo pdo_mysql mbstring zip xml gd
-
+    libpq-dev \
+    && docker-php-ext-install pdo pdo_mysql pdo_pgsql mbstring zip xml gd
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app

@@ -11,3 +11,4 @@ services:
         generateValue: true
       - key: APP_DEBUG
         value: false
+php artisan migrate --force && php-fpm

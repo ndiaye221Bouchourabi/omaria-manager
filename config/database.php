@@ -97,10 +97,7 @@ return [
             'prefix_indexes' => true,
             'search_path' => 'public',
             'sslmode' => 'require',
-            'options' => [
-                PDO::ATTR_PERSISTENT => true,
-                PDO::ATTR_TIMEOUT => 30,
-            ],
+            // pas d'options PDO — incompatible avec pgBouncer
         ],
 
         'sqlsrv' => [

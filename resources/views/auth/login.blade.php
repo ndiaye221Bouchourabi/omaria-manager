@@ -421,19 +421,31 @@
         </div>
 
         <div class="brand-stats">
-            <div class="brand-stat">
-                <div class="brand-stat-value">{{ \App\Models\Point::count() }}</div>
-                <div class="brand-stat-label">Points actifs</div>
-            </div>
-            <div class="brand-stat">
-                <div class="brand-stat-value">{{ \App\Models\Collecte::count() }}</div>
-                <div class="brand-stat-label">Collectes</div>
-            </div>
-            <div class="brand-stat">
-                <div class="brand-stat-value">{{ \App\Models\Point::where('status', 'Actif')->count() }}</div>
-                <div class="brand-stat-label">En service</div>
-            </div>
+    <div class="brand-stat">
+        <div class="brand-stat-value">
+            @php
+                try { echo \App\Models\Point::count(); } catch(\Exception $e) { echo '--'; }
+            @endphp
         </div>
+        <div class="brand-stat-label">Points actifs</div>
+    </div>
+    <div class="brand-stat">
+        <div class="brand-stat-value">
+            @php
+                try { echo \App\Models\Collecte::count(); } catch(\Exception $e) { echo '--'; }
+            @endphp
+        </div>
+        <div class="brand-stat-label">Collectes</div>
+    </div>
+    <div class="brand-stat">
+        <div class="brand-stat-value">
+            @php
+                try { echo \App\Models\Point::where('status','Actif')->count(); } catch(\Exception $e) { echo '--'; }
+            @endphp
+        </div>
+        <div class="brand-stat-label">En service</div>
+    </div>
+</div>
     </div>
 
     {{-- Panneau droit formulaire --}}
